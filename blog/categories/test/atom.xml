@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: test | SKELETON9]]></title>
+  <link href="http://skeleton9.github.io/blog/categories/test/atom.xml" rel="self"/>
+  <link href="http://skeleton9.github.io/"/>
+  <updated>2013-10-08T13:56:39+08:00</updated>
+  <id>http://skeleton9.github.io/</id>
+  <author>
+    <name><![CDATA[SKELETON9]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[hello]]></title>
+    <link href="http://skeleton9.github.io/blog/2013/10/08/hello/"/>
+    <updated>2013-10-08T13:54:00+08:00</updated>
+    <id>http://skeleton9.github.io/blog/2013/10/08/hello</id>
+    <content type="html"><![CDATA[<p>This is just for a test</p>
+]]></content>
+  </entry>
+  
+</feed>
