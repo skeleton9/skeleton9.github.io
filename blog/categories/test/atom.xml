@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: test | SKELETON9]]></title>
+  <title><![CDATA[Category: test | 测试圈]]></title>
   <link href="http://skeleton9.github.io/blog/categories/test/atom.xml" rel="self"/>
   <link href="http://skeleton9.github.io/"/>
-  <updated>2013-10-08T13:56:39+08:00</updated>
+  <updated>2013-11-05T14:06:13+08:00</updated>
   <id>http://skeleton9.github.io/</id>
   <author>
     <name><![CDATA[SKELETON9]]></name>
@@ -18,7 +18,24 @@
     <link href="http://skeleton9.github.io/blog/2013/10/08/hello/"/>
     <updated>2013-10-08T13:54:00+08:00</updated>
     <id>http://skeleton9.github.io/blog/2013/10/08/hello</id>
-    <content type="html"><![CDATA[<p>This is just for a test</p>
+    <content type="html"><![CDATA[<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>exmaple ruby code </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class="k">def</span> <span class="nf">test</span><span class="p">()</span>
+</span><span class='line'>  <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="o">].</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;puts i</span>
+</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;  end</span>
+</span><span class='line'><span class="sr">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 ]]></content>
   </entry>
   
