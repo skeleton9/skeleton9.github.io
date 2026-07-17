@@ -1,0 +1,34 @@
+<div
+  class="modal fade"
+  id="coffeeModal"
+  tabindex="-1"
+  aria-labelledby="coffeeModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content coffee-modal">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title" id="coffeeModalLabel">
+          <i class="fas fa-mug-hot me-2" aria-hidden="true"></i>
+          Buy Me a Coffee
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body text-center pt-2">
+        <img
+          class="coffee-qr"
+          src="{{ '/assets/img/wechat-pay.png' | relative_url }}"
+          width="280"
+          height="280"
+          alt="微信收款码"
+        >
+        <p class="coffee-tip mb-0 mt-3">微信扫码，请我喝杯咖啡</p>
+      </div>
+    </div>
+  </div>
+</div>
