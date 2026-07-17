@@ -1,25 +1,29 @@
 <div
-  class="modal fade"
   id="coffeeModal"
-  tabindex="-1"
-  aria-labelledby="coffeeModalLabel"
+  class="coffee-overlay"
+  hidden
   aria-hidden="true"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="coffeeModalLabel"
 >
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content coffee-modal">
-      <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title" id="coffeeModalLabel">
-          <i class="fas fa-mug-hot me-2" aria-hidden="true"></i>
+  <div class="coffee-dialog" role="document">
+    <div class="coffee-panel">
+      <div class="coffee-panel-header">
+        <h5 class="coffee-panel-title" id="coffeeModalLabel">
+          <i class="fas fa-mug-hot" aria-hidden="true"></i>
           Buy Me a Coffee
         </h5>
         <button
           type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+          class="coffee-close"
+          data-coffee-close
+          aria-label="关闭"
+        >
+          &times;
+        </button>
       </div>
-      <div class="modal-body text-center pt-2">
+      <div class="coffee-panel-body">
         <img
           class="coffee-qr"
           src="{{ '/assets/img/wechat-pay.png' | relative_url }}"
@@ -27,7 +31,7 @@
           height="280"
           alt="微信收款码"
         >
-        <p class="coffee-tip mb-0 mt-3">微信扫码，请我喝杯咖啡</p>
+        <p class="coffee-tip">微信扫码，请我喝杯咖啡</p>
       </div>
     </div>
   </div>
