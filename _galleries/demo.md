@@ -1,4 +1,5 @@
 ---
+slug: demo
 title: 示例图集
 date: 2026-07-18 12:00:00 +0800
 description: 一组示例照片，演示如何用图集记录片刻。
@@ -14,4 +15,4 @@ images:
 
 这是一篇示例图集。你可以在正文里写故事、说明或心情，下方是组图与每张图的说明文字。
 
-新建图集时，在 `_galleries/` 下添加 Markdown 文件，并把图片放到 `assets/img/galleries/` 对应目录即可。
+新建图集时，在 `_galleries/` 下添加 Markdown 文件（例如 `trip.md`），访问路径为 `/gallery/trip/`，并把图片放到 `assets/img/galleries/` 对应目录即可。

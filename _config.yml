@@ -182,7 +182,7 @@ collections:
     sort_by: order
   galleries:
     output: true
-    sort_by: date
+    permalink: /gallery/:name/
 
 defaults:
   - scope:
@@ -210,7 +210,6 @@ defaults:
       type: galleries
     values:
       layout: gallery
-      permalink: /galleries/:name/
   - scope:
       path: "pages"
     values:
