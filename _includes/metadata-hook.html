@@ -1,1 +1,4 @@
 <script defer src="{{ '/assets/js/coffee-modal.js' | relative_url }}"></script>
+{% if page.layout == 'gallery' or page.title == '图集' %}
+  <script defer src="{{ '/assets/js/gallery.js' | relative_url }}"></script>
+{% endif %}

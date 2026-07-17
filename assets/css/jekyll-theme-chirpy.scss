@@ -129,3 +129,120 @@
 body.coffee-modal-open {
   overflow: hidden;
 }
+
+/* Galleries */
+.gallery-index {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.gallery-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 0.9rem;
+  border: 1px solid var(--main-border-color, rgba(127, 127, 127, 0.25));
+  background: var(--card-bg, var(--main-bg, #fff));
+  color: inherit;
+  text-decoration: none !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gallery-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+}
+
+.gallery-card-cover {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: rgba(127, 127, 127, 0.12);
+}
+
+.gallery-card-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gallery-card-placeholder {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  opacity: 0.45;
+}
+
+.gallery-card-body {
+  padding: 0.9rem 1rem 1.1rem;
+}
+
+.gallery-card-title {
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.35;
+}
+
+.gallery-card-desc {
+  margin: 0.45rem 0 0;
+  color: var(--text-muted-color, #6c757d);
+  font-size: 0.92rem;
+}
+
+.gallery-card-meta {
+  margin: 0.65rem 0 0;
+  color: var(--text-muted-color, #6c757d);
+  font-size: 0.85rem;
+}
+
+.gallery-header h1 {
+  margin-bottom: 0.35rem;
+}
+
+.gallery-desc {
+  margin: 0.25rem 0 0.5rem;
+  color: var(--text-muted-color, #6c757d);
+  font-size: 1.05rem;
+}
+
+.gallery-meta {
+  margin-bottom: 1.25rem;
+  font-size: 0.9rem;
+}
+
+.gallery-intro {
+  margin-bottom: 1.5rem;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.gallery-item {
+  margin: 0;
+}
+
+.gallery-item img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 0.75rem;
+  display: block;
+}
+
+.gallery-item figcaption {
+  margin-top: 0.45rem;
+  color: var(--text-muted-color, #6c757d);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.gallery-back a {
+  text-decoration: none;
+}

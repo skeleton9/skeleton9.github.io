@@ -1,0 +1,58 @@
+---
+layout: default
+---
+
+{% include lang.html %}
+
+<article class="px-1 gallery-page">
+  <header class="gallery-header">
+    <h1>{{ page.title }}</h1>
+    {% if page.description %}
+      <p class="gallery-desc">{{ page.description }}</p>
+    {% endif %}
+    <p class="gallery-meta text-muted">
+      <time datetime="{{ page.date | date_to_xmlschema }}">
+        {{ page.date | date: '%Y-%m-%d' }}
+      </time>
+      {% if page.images %}
+        <span>· {{ page.images.size }} 张</span>
+      {% endif %}
+    </p>
+  </header>
+
+  {% if content != blank %}
+    <div class="gallery-intro content">
+      {{ content }}
+    </div>
+  {% endif %}
+
+  {% if page.images and page.images.size > 0 %}
+    <div class="gallery-grid" id="gallery-grid">
+      {% for image in page.images %}
+        {% assign img_src = image.src | relative_url %}
+        <figure class="gallery-item">
+          <a
+            href="{{ img_src }}"
+            class="gallery-link"
+            {% if image.caption %}
+              data-description="{{ image.caption | escape }}"
+            {% endif %}
+          >
+            <img
+              src="{{ img_src }}"
+              alt="{{ image.caption | default: page.title | escape }}"
+              loading="lazy"
+            >
+          </a>
+          {% if image.caption %}
+            <figcaption>{{ image.caption }}</figcaption>
+          {% endif %}
+        </figure>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <p class="gallery-back mt-4">
+    <a href="{{ '/galleries/' | relative_url }}">← 返回图集</a>
+  </p>
+</article>
