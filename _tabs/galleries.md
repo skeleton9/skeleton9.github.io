@@ -6,16 +6,18 @@ order: 4
 permalink: /galleries/
 ---
 
-{% assign gallery_list = site.galleries | sort: 'date' | reverse %}
+{% assign gallery_list = site.pages | where: "layout", "gallery" | sort: "date" | reverse %}
 
 {% if gallery_list.size == 0 %}
-  <p class="text-muted">还没有图集。在 <code>_galleries/</code> 下新建 Markdown 文件即可。</p>
+  <p class="text-muted">还没有图集。在 <code>gallery/</code> 下新建 Markdown 文件即可。</p>
 {% else %}
   <div class="gallery-index">
     {% for gallery in gallery_list %}
       {% assign cover = gallery.cover %}
-      {% if cover == blank and gallery.images and gallery.images.size > 0 %}
-        {% assign cover = gallery.images.first.src %}
+      {% if cover == nil or cover == "" %}
+        {% if gallery.images and gallery.images.size > 0 %}
+          {% assign cover = gallery.images.first.src %}
+        {% endif %}
       {% endif %}
       <a class="gallery-card" href="{{ gallery.url | relative_url }}">
         <div class="gallery-card-cover">
@@ -33,11 +35,13 @@ permalink: /galleries/
             <p class="gallery-card-desc">{{ gallery.description }}</p>
           {% endif %}
           <p class="gallery-card-meta">
-            <time datetime="{{ gallery.date | date_to_xmlschema }}">
-              {{ gallery.date | date: '%Y-%m-%d' }}
-            </time>
+            {% if gallery.date %}
+              <time datetime="{{ gallery.date | date_to_xmlschema }}">
+                {{ gallery.date | date: '%Y-%m-%d' }}
+              </time>
+            {% endif %}
             {% if gallery.images %}
-              <span>· {{ gallery.images.size }} 张</span>
+              <span>{% if gallery.date %}· {% endif %}{{ gallery.images.size }} 张</span>
             {% endif %}
           </p>
         </div>
