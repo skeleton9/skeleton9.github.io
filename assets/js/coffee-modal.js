@@ -4,15 +4,11 @@
 
   if (!overlay || !openBtn) return;
 
-  const focusableSelector =
-    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
-
   const open = () => {
     overlay.hidden = false;
     overlay.setAttribute("aria-hidden", "false");
     document.body.classList.add("coffee-modal-open");
-    const closeBtn = overlay.querySelector("[data-coffee-close]");
-    closeBtn?.focus();
+    overlay.querySelector("[data-coffee-close]")?.focus();
   };
 
   const close = () => {
