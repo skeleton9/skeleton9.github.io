@@ -6,16 +6,21 @@
 
   const open = () => {
     overlay.hidden = false;
-    overlay.setAttribute("aria-hidden", "false");
+    overlay.inert = false;
     document.body.classList.add("coffee-modal-open");
-    overlay.querySelector("[data-coffee-close]")?.focus();
+    // Focus after the dialog becomes visible/interactive.
+    requestAnimationFrame(() => {
+      overlay.querySelector("[data-coffee-close]")?.focus();
+    });
   };
 
   const close = () => {
-    overlay.hidden = true;
-    overlay.setAttribute("aria-hidden", "true");
-    document.body.classList.remove("coffee-modal-open");
+    // Move focus out before hiding, so assistive tech never sees
+    // a focused element inside an inaccessible ancestor.
     openBtn.focus();
+    overlay.inert = true;
+    overlay.hidden = true;
+    document.body.classList.remove("coffee-modal-open");
   };
 
   openBtn.addEventListener("click", open);
