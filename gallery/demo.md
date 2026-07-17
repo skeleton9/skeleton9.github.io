@@ -1,4 +1,5 @@
 ---
+permalink: /gallery/demo/
 layout: gallery
 title: 示例图集
 date: 2026-07-18 12:00:00 +0800

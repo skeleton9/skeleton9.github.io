@@ -20,14 +20,17 @@ permalink: /galleries/
         {% endif %}
       {% endif %}
       <a class="gallery-card" href="{{ gallery.url | relative_url }}">
-        <div class="gallery-card-cover">
-          {% if cover %}
-            <img src="{{ cover | relative_url }}" alt="{{ gallery.title }}" loading="lazy">
-          {% else %}
-            <div class="gallery-card-placeholder">
+        <div
+          class="gallery-card-cover{% unless cover %} gallery-card-cover-empty{% endunless %}"
+          {% if cover %}style="background-image: url('{{ cover | relative_url }}')"{% endif %}
+          role="img"
+          aria-label="{{ gallery.title }}"
+        >
+          {% unless cover %}
+            <span class="gallery-card-placeholder">
               <i class="fas fa-images" aria-hidden="true"></i>
-            </div>
-          {% endif %}
+            </span>
+          {% endunless %}
         </div>
         <div class="gallery-card-body">
           <h2 class="gallery-card-title">{{ gallery.title }}</h2>

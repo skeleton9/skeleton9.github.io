@@ -206,6 +206,7 @@ defaults:
       path: "gallery"
     values:
       layout: gallery
+      permalink: /gallery/:basename/
   - scope:
       path: "pages"
     values:
