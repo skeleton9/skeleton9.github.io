@@ -1,5 +1,5 @@
 (() => {
-  const overlay = document.getElementById("coffeeModal");
+  const overlay = document.getElementById("coffee");
   const openBtn = document.querySelector("[data-coffee-open]");
   const COFFEE_HASH = "#coffee";
 
