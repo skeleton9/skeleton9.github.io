@@ -1,29 +1,48 @@
 (() => {
   const overlay = document.getElementById("coffeeModal");
   const openBtn = document.querySelector("[data-coffee-open]");
+  const COFFEE_HASH = "#coffee";
 
   if (!overlay || !openBtn) return;
 
-  const open = () => {
+  const hasCoffeeHash = () =>
+    location.hash === COFFEE_HASH || location.hash === "#buy-me-a-coffee";
+
+  const isCoffeePath = () => {
+    const path = location.pathname.replace(/\/+$/, "");
+    return path.endsWith("/coffee");
+  };
+
+  const open = ({ syncHash = true } = {}) => {
     overlay.hidden = false;
     overlay.inert = false;
     document.body.classList.add("coffee-modal-open");
-    // Focus after the dialog becomes visible/interactive.
+
+    if (syncHash && !hasCoffeeHash()) {
+      history.replaceState(
+        null,
+        "",
+        `${location.pathname}${location.search}${COFFEE_HASH}`
+      );
+    }
+
     requestAnimationFrame(() => {
       overlay.querySelector("[data-coffee-close]")?.focus();
     });
   };
 
-  const close = () => {
-    // Move focus out before hiding, so assistive tech never sees
-    // a focused element inside an inaccessible ancestor.
+  const close = ({ syncHash = true } = {}) => {
     openBtn.focus();
     overlay.inert = true;
     overlay.hidden = true;
     document.body.classList.remove("coffee-modal-open");
+
+    if (syncHash && hasCoffeeHash()) {
+      history.replaceState(null, "", `${location.pathname}${location.search}`);
+    }
   };
 
-  openBtn.addEventListener("click", open);
+  openBtn.addEventListener("click", () => open());
 
   overlay.addEventListener("click", (event) => {
     if (
@@ -39,4 +58,16 @@
       close();
     }
   });
+
+  window.addEventListener("hashchange", () => {
+    if (hasCoffeeHash()) {
+      open({ syncHash: false });
+    } else if (!overlay.hidden) {
+      close({ syncHash: false });
+    }
+  });
+
+  if (hasCoffeeHash() || isCoffeePath()) {
+    open({ syncHash: !hasCoffeeHash() });
+  }
 })();
