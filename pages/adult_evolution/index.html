@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>成年人的自我进化｜人生复利系统</title>
+<style>
+  :root{
+    --bg:#07101f; --panel:#0d1830; --panel2:#111f3d; --text:#eef4ff; --muted:#9fb0cc;
+    --line:rgba(255,255,255,.09); --accent:#72e6c4; --accent2:#8ea7ff; --gold:#ffd276; --danger:#ff8e9e;
+    --shadow:0 24px 70px rgba(0,0,0,.30);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:
+    radial-gradient(circle at 12% 5%, rgba(114,230,196,.12), transparent 30%),
+    radial-gradient(circle at 85% 15%, rgba(142,167,255,.13), transparent 28%),
+    var(--bg);color:var(--text);font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;line-height:1.65}
+  a{color:inherit;text-decoration:none}
+  .wrap{width:min(1180px,calc(100% - 32px));margin:auto}
+  .hero{min-height:92vh;display:grid;place-items:center;padding:64px 0 48px;position:relative;overflow:hidden}
+  .hero:after{content:"";position:absolute;width:620px;height:620px;border:1px solid rgba(255,255,255,.06);border-radius:50%;right:-160px;top:120px;box-shadow:0 0 0 80px rgba(255,255,255,.015),0 0 0 160px rgba(255,255,255,.008)}
+  .eyebrow{color:var(--accent);letter-spacing:.18em;font-size:13px;font-weight:800;text-transform:uppercase}
+  h1{font-size:clamp(48px,8vw,98px);line-height:.95;margin:14px 0 24px;letter-spacing:-.055em;max-width:980px}
+  .hero p{font-size:clamp(18px,2.4vw,26px);color:var(--muted);max-width:850px;margin:0}
+  .hero strong{color:white}
+  .formula{margin-top:38px;display:flex;gap:12px;flex-wrap:wrap;position:relative;z-index:2}
+  .pill{padding:10px 15px;border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:999px;color:#d9e7ff;font-size:14px}
+  .nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(16px);background:rgba(7,16,31,.72);border-bottom:1px solid var(--line)}
+  .nav .wrap{display:flex;gap:22px;overflow:auto;padding:12px 0;font-size:13px;color:var(--muted)}
+  section{padding:92px 0;border-bottom:1px solid var(--line)}
+  .kicker{color:var(--accent);font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+  h2{font-size:clamp(34px,5vw,58px);line-height:1.08;margin:10px 0 16px;letter-spacing:-.035em}
+  .lead{color:var(--muted);font-size:18px;max-width:850px;margin-bottom:38px}
+  .school-social{display:grid;grid-template-columns:1fr 100px 1fr;gap:18px;align-items:center}
+  .box{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.025));border:1px solid var(--line);border-radius:24px;padding:28px;box-shadow:var(--shadow)}
+  .box h3{font-size:24px;margin:0 0 10px}.box p{color:var(--muted);margin:0}.arrow{text-align:center;font-size:42px;color:var(--accent)}
+  .metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:18px}.metric{padding:16px;border-radius:16px;background:var(--panel2);text-align:center}.metric b{display:block;font-size:18px}.metric span{font-size:12px;color:var(--muted)}
+  .ladder{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;align-items:end;margin-top:42px}
+  .step{border:1px solid var(--line);border-radius:20px 20px 12px 12px;padding:18px;background:linear-gradient(180deg,rgba(142,167,255,.14),rgba(255,255,255,.03));min-height:160px;position:relative;overflow:hidden}
+  .step:nth-child(2){min-height:190px}.step:nth-child(3){min-height:220px}.step:nth-child(4){min-height:250px}.step:nth-child(5){min-height:280px}.step:nth-child(6){min-height:310px;background:linear-gradient(180deg,rgba(114,230,196,.18),rgba(255,255,255,.03))}
+  .num{font-size:12px;color:var(--muted)}.step h3{margin:6px 0 8px;font-size:22px}.step p{font-size:13px;color:var(--muted)}
+  .equation{font-size:clamp(28px,5vw,58px);text-align:center;padding:34px;border:1px solid var(--line);border-radius:24px;background:rgba(255,255,255,.035);margin:36px 0}.equation .hi{color:var(--gold)}
+  .assets{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.asset{min-height:190px}.asset h3{font-size:21px}.asset .tag{font-size:12px;color:var(--accent)}
+  .flywheel{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;align-items:center;margin-top:36px}.node{border:1px solid var(--line);border-radius:999px;padding:18px 12px;text-align:center;background:var(--panel);font-weight:700}.sep{text-align:center;color:var(--accent);font-size:28px}
+  .lever{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.lever .box{min-height:160px}.lever .icon{font-size:28px}.lever h3{margin-top:10px}
+  .curves{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.curve{position:relative;overflow:hidden}.curve:before{content:"";position:absolute;width:140px;height:140px;border-radius:50%;right:-45px;top:-45px;background:rgba(255,255,255,.035)}.curve h3{font-size:26px}.curve ul{padding-left:18px;color:var(--muted)}
+  .youinc{display:grid;grid-template-columns:1.15fr .85fr;gap:20px}.checks{display:grid;grid-template-columns:1fr 1fr;gap:12px}.check{padding:16px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.03)}.check b{display:block;margin-bottom:5px}.check span{color:var(--muted);font-size:13px}
+  .score{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}.score .ring{width:180px;height:180px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--accent) 0deg,var(--accent) 0deg,rgba(255,255,255,.08) 0deg);position:relative;margin-bottom:14px}.score .ring:after{content:"";position:absolute;inset:14px;border-radius:50%;background:var(--panel)}.score .ring span{position:relative;z-index:2;font-size:40px;font-weight:800}.score p{color:var(--muted)}
+  .slider-row{display:grid;grid-template-columns:120px 1fr 42px;gap:10px;align-items:center;margin:9px 0;font-size:13px}.slider-row input{width:100%;accent-color:var(--accent)}
+  .timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.age{padding:24px;border-radius:22px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,210,118,.10),rgba(255,255,255,.02))}.age b{font-size:34px;display:block}.age p{color:var(--muted)}
+  .quote{padding:42px;border-radius:28px;background:linear-gradient(135deg,rgba(114,230,196,.12),rgba(142,167,255,.12));border:1px solid var(--line);font-size:clamp(26px,4vw,46px);line-height:1.3;letter-spacing:-.025em}
+  footer{padding:46px 0 72px;color:var(--muted);font-size:13px}
+  @media(max-width:900px){.school-social,.youinc{grid-template-columns:1fr}.arrow{transform:rotate(90deg)}.metrics{grid-template-columns:repeat(2,1fr)}.ladder{grid-template-columns:1fr 1fr}.step,.step:nth-child(n){min-height:170px}.assets,.lever,.curves,.timeline{grid-template-columns:1fr 1fr}.flywheel{grid-template-columns:1fr}.sep{transform:rotate(90deg)}}
+  @media(max-width:620px){section{padding:66px 0}.assets,.lever,.curves,.timeline,.checks,.ladder{grid-template-columns:1fr}.metrics{grid-template-columns:1fr}.hero{min-height:auto;padding-top:86px}.hero:after{display:none}}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a href="#rules">规则变化</a><a href="#levels">六层进化</a><a href="#value">价值</a><a href="#assets">资产</a><a href="#leverage">杠杆</a><a href="#curves">三条曲线</a><a href="#youinc">You Inc.</a><a href="#timeline">人生阶段</a>
+</div></nav>
+<header class="hero"><div class="wrap">
+  <div class="eyebrow">Adult Evolution System · 人生复利系统</div>
+  <h1>成年人的自我进化，<br>不是更努力，而是更会积累。</h1>
+  <p>在没有标准答案的人生里，持续找到方向，把<strong>经历 → 能力 → 资产 → 杠杆 → 选择权</strong>，让每一阶段都成为下一阶段的资本。</p>
+  <div class="formula"><span class="pill">进化</span><span class="pill">积累</span><span class="pill">复利</span><span class="pill">选择</span><span class="pill">可进化性</span></div>
+</div></header>
+
+<section id="rules"><div class="wrap">
+  <div class="kicker">01 · Game Change</div><h2>从“学校系统”进入“社会系统”</h2>
+  <p class="lead">成年以后，真正难的不是没有知识，而是没有教学大纲、没有统一考试、没有标准路径。你必须自己定义目标、判断规则、承担结果。</p>
+  <div class="school-social">
+    <div class="box"><h3>学校</h3><p>学习 → 考试 → 排名 → 升级 → 毕业。目标明确，反馈即时，路径由外部设计。</p><div class="metrics"><div class="metric"><b>1</b><span>主要赛道</span></div><div class="metric"><b>清晰</b><span>规则</span></div><div class="metric"><b>统一</b><span>评价</span></div><div class="metric"><b>短期</b><span>反馈</span></div><div class="metric"><b>外部</b><span>路径</span></div></div></div>
+    <div class="arrow">→</div>
+    <div class="box"><h3>成年社会</h3><p>认知 × 能力 × 资源 × 关系 × 信任 × 资本 × 运气 × 时间。你需要自己设计人生。</p><div class="metrics"><div class="metric"><b>多维</b><span>竞争</span></div><div class="metric"><b>隐性</b><span>规则</span></div><div class="metric"><b>多元</b><span>评价</span></div><div class="metric"><b>延迟</b><span>反馈</span></div><div class="metric"><b>自主</b><span>路径</span></div></div></div>
+  </div>
+</div></section>
+
+<section id="levels"><div class="wrap">
+  <div class="kicker">02 · Evolution Ladder</div><h2>成年人的六层进化</h2><p class="lead">不以年龄严格划分，而是从“我能活下去”逐步走向“我能决定怎么活”。</p>
+  <div class="ladder">
+    <div class="step"><span class="num">LEVEL 1</span><h3>生存</h3><p>让社会愿意为你的劳动与技能付钱。</p></div>
+    <div class="step"><span class="num">LEVEL 2</span><h3>能力</h3><p>把任务转化为方法，把经验转化为可重复能力。</p></div>
+    <div class="step"><span class="num">LEVEL 3</span><h3>价值</h3><p>从“我会什么”升级为“我能解决什么重要问题”。</p></div>
+    <div class="step"><span class="num">LEVEL 4</span><h3>资产</h3><p>让今天的投入，明天仍然属于你。</p></div>
+    <div class="step"><span class="num">LEVEL 5</span><h3>杠杆</h3><p>让一次努力被人、资本、代码、内容、AI放大。</p></div>
+    <div class="step"><span class="num">LEVEL 6</span><h3>自由</h3><p>把积累转化成选择权：做什么、不做什么、和谁一起做。</p></div>
+  </div>
+</div></section>
+
+<section id="value"><div class="wrap"><div class="kicker">03 · Value Creation</div><h2>社会奖励的，不是努力本身，而是你解决了多大的问题</h2>
+  <div class="equation">回报 ≈ <span class="hi">能力</span> × <span class="hi">问题价值</span> × <span class="hi">稀缺性</span></div>
+  <p class="lead">真正的跃迁，是从完成任务的人，变成解决问题的人；再从解决问题的人，变成选择问题的人。人生差距，经常始于“你选择解决什么问题”。</p>
+</div></section>
+
+<section id="assets"><div class="wrap"><div class="kicker">04 · Compounding Assets</div><h2>成年以后，最重要的是留下什么</h2><p class="lead">判断一件事是否值得长期做，可以问：今天投入的东西，一年后还属于我吗？</p>
+  <div class="assets">
+    <div class="box asset"><span class="tag">ABILITY</span><h3>能力资产</h3><p>解决复杂问题、产品、销售、写作、管理、技术、决策。</p></div>
+    <div class="box asset"><span class="tag">INSIGHT</span><h3>认知资产</h3><p>对行业、人性、商业、社会运行规律形成自己的模型。</p></div>
+    <div class="box asset"><span class="tag">RELATIONSHIP</span><h3>关系资产</h3><p>谁了解你、信任你、愿意与你长期协作。</p></div>
+    <div class="box asset"><span class="tag">TRUST</span><h3>信用资产</h3><p>稳定交付、可靠判断、长期兑现承诺形成的声誉。</p></div>
+    <div class="box asset"><span class="tag">CONTENT / IP</span><h3>内容与影响力资产</h3><p>你的观点、作品、品牌能否脱离你本人持续传播。</p></div>
+    <div class="box asset"><span class="tag">CAPITAL</span><h3>金融与商业资产</h3><p>现金流、股权、投资、企业，让价值不只依赖你的时间。</p></div>
+  </div>
+  <div class="flywheel"><div class="node">经历</div><div class="sep">→</div><div class="node">经验 / 方法</div><div class="sep">→</div><div class="node">能力</div><div class="sep">→</div><div class="node">成果 / 信用</div><div class="sep">→</div><div class="node">资源 / 资产</div></div>
+</div></section>
+
+<section id="leverage"><div class="wrap"><div class="kicker">05 · Leverage</div><h2>努力有上限，杠杆决定放大倍数</h2><p class="lead">时间只能线性出售，但系统、组织、资本、内容和 AI 可以让一次投入重复产生价值。</p>
+  <div class="lever">
+    <div class="box"><div class="icon">👥</div><h3>人 / 组织</h3><p>从“我做”升级到“系统让很多人一起做”。</p></div>
+    <div class="box"><div class="icon">💻</div><h3>代码 / 产品</h3><p>一次构建，多次复制，边际成本持续下降。</p></div>
+    <div class="box"><div class="icon">✍️</div><h3>内容 / 品牌</h3><p>在你不在线时，观点仍在传播，信任仍在累积。</p></div>
+    <div class="box"><div class="icon">🤖</div><h3>AI</h3><p>把部分认知劳动模块化，让个人拥有接近团队的产能。</p></div>
+  </div>
+</div></section>
+
+<section id="curves"><div class="wrap"><div class="kicker">06 · Three Curves</div><h2>成年人最好同时经营三条曲线</h2><p class="lead">如果第一条曲线占据100%的时间，人会很忙，但很难复利。</p>
+  <div class="curves">
+    <div class="box curve"><h3>① 生存曲线</h3><ul><li>收入与职业</li><li>现金流</li><li>家庭责任</li><li>短期确定性</li></ul><p>目标：站稳。</p></div>
+    <div class="box curve"><h3>② 成长曲线</h3><ul><li>能力</li><li>认知</li><li>身体</li><li>关系与视野</li></ul><p>目标：持续可进化。</p></div>
+    <div class="box curve"><h3>③ 复利曲线</h3><ul><li>事业</li><li>资本</li><li>作品</li><li>品牌与影响力</li></ul><p>目标：决定十年后的位置。</p></div>
+  </div>
+</div></section>
+
+<section id="youinc"><div class="wrap"><div class="kicker">07 · You Inc.</div><h2>把自己当成一家“一个人的公司”</h2><p class="lead">拖动下面的评分，看看你目前更像“高强度运转”，还是“高复利成长”。这不是科学量表，而是一个自我诊断镜子。</p>
+  <div class="youinc">
+    <div class="box"><div class="checks">
+      <div class="check"><b>战略</b><span>我是否看得见未来5—10年的变化？</span></div><div class="check"><b>产品</b><span>我的核心能力与独特价值是什么？</span></div>
+      <div class="check"><b>客户</b><span>谁愿意持续为我的价值付钱？</span></div><div class="check"><b>资产</b><span>过去一年我留下了什么可复用资产？</span></div>
+      <div class="check"><b>研发</b><span>我正在学习哪种未来能力？</span></div><div class="check"><b>投资</b><span>时间、钱、注意力是否投向高复利区？</span></div>
+      <div class="check"><b>护城河</b><span>五年后什么东西别人难复制？</span></div><div class="check"><b>使命</b><span>除了赚钱，我长期愿意解决什么问题？</span></div>
+    </div>
+    <div class="box score"><div class="ring" id="ring"><span id="score">50</span></div><p id="scoreText">你已经在积累，但还可以把更多时间从“忙碌”转向“复利”。</p>
+      <div style="width:100%;max-width:380px">
+        <div class="slider-row"><span>能力</span><input type="range" min="0" max="10" value="5"><b>5</b></div>
+        <div class="slider-row"><span>资产</span><input type="range" min="0" max="10" value="5"><b>5</b></div>
+        <div class="slider-row"><span>杠杆</span><input type="range" min="0" max="10" value="5"><b>5</b></div>
+        <div class="slider-row"><span>选择权</span><input type="range" min="0" max="10" value="5"><b>5</b></div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section id="timeline"><div class="wrap"><div class="kicker">08 · Long Game</div><h2>每五年，成为一个明显不同版本的自己</h2><p class="lead">年龄不是硬边界，但可以用它提醒自己：人生后半程不应继续只出售时间，而要逐步建立资产、杠杆与自主权。</p>
+  <div class="timeline">
+    <div class="age"><b>20–30</b><h3>获得能力</h3><p>扩大样本、快速学习、建立社会生存能力。</p></div>
+    <div class="age"><b>30–40</b><h3>选择方向</h3><p>找到长期赛道，形成独特优势与判断力。</p></div>
+    <div class="age"><b>40–50</b><h3>资产化 / 杠杆化</h3><p>把能力变成系统、团队、资本、产品、影响力。</p></div>
+    <div class="age"><b>50+</b><h3>自由与再创造</h3><p>用积累换取选择权，把时间投入真正重要的人和问题。</p></div>
+  </div>
+  <div class="quote" style="margin-top:30px">人生不是一直向前跑，而是每跑一段，都应该留下些什么。<br><strong>进化 · 积累 · 复利 · 选择</strong></div>
+</div></section>
+<footer><div class="wrap">Adult Evolution System · 单页可视化思考框架</div></footer>
+<script>
+  const sliders=[...document.querySelectorAll('input[type="range"]')];
+  const score=document.getElementById('score'), ring=document.getElementById('ring'), text=document.getElementById('scoreText');
+  function update(){
+    sliders.forEach(s=>s.nextElementSibling.textContent=s.value);
+    const avg=sliders.reduce((a,s)=>a+Number(s.value),0)/sliders.length;
+    const pct=Math.round(avg*10); score.textContent=pct;
+    ring.style.background=`conic-gradient(var(--accent) 0deg, var(--accent) ${pct*3.6}deg, rgba(255,255,255,.08) ${pct*3.6}deg)`;
+    text.textContent=pct<35?'当前主要在维持运转：先建立稳定能力与现金流，再谈复利。':pct<65?'你已经在积累，但还可以把更多时间从“忙碌”转向“复利”。':pct<85?'你的系统已经有明显复利特征，下一步是提高杠杆与选择权。':'你正在从“个人能力”走向“资产与系统”，重点是守住长期主义与持续进化。';
+  }
+  sliders.forEach(s=>s.addEventListener('input',update)); update();
+</script>
+</body></html>
