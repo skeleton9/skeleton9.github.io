@@ -41,18 +41,6 @@
   </nav>
 
   <div class="sidebar-bottom d-flex flex-wrap align-items-center w-100">
-    <button
-      type="button"
-      class="btn btn-coffee"
-      data-coffee-open
-      aria-haspopup="dialog"
-      aria-controls="coffee"
-      aria-label="Buy Me a Coffee"
-    >
-      <i class="fas fa-mug-hot" aria-hidden="true"></i>
-      <span>Buy Me a Coffee</span>
-    </button>
-
     {% unless site.theme_mode == 'light' or site.theme_mode == 'dark' %}
       {%- capture icon_system -%}
         <i class="fa-solid fa-display" data-theme-mode="system"></i>

@@ -1,0 +1,39 @@
+<footer aria-label="Site Info" class="site-footer d-flex flex-column text-muted pb-3">
+  <div class="site-footer-meta d-flex flex-column flex-lg-row justify-content-lg-between align-items-lg-center">
+    <p>
+      &copy; <time>{{ 'now' | date: '%Y' }}</time>
+      {% if site.social.links[0] %}
+        <a href="{{ site.social.links[0] }}">{{ site.social.name }}</a>.
+      {% else %}
+        {{ site.social.name }}.
+      {% endif %}
+      {% if site.data.locales[include.lang].copyright.brief %}
+        {{ site.data.locales[include.lang].copyright.brief }}
+      {% endif %}
+    </p>
+
+    <p>
+      {% capture platform %}<a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a>{% endcapture %}
+      {% capture theme %}<a href="https://github.com/cotes2020/jekyll-theme-chirpy" target="_blank" rel="noopener">Chirpy</a>{% endcapture %}
+      {{ site.data.locales[include.lang].meta
+        | default: 'Powered by :PLATFORM with the :THEME theme.'
+        | replace: ':PLATFORM', platform
+        | replace: ':THEME', theme
+      }}
+    </p>
+  </div>
+
+  <div class="site-footer-coffee">
+    <button
+      type="button"
+      class="btn btn-coffee"
+      data-coffee-open
+      aria-haspopup="dialog"
+      aria-controls="coffee"
+      aria-label="Buy Me a Coffee"
+    >
+      <i class="fas fa-mug-hot" aria-hidden="true"></i>
+      <span>Buy Me a Coffee</span>
+    </button>
+  </div>
+</footer>
