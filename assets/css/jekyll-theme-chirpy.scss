@@ -144,7 +144,11 @@ body.coffee-modal-open {
   margin-bottom: 2rem;
 }
 
-.standalone-pages h2 {
+.standalone-pages-group + .standalone-pages-group {
+  margin-top: 1.75rem;
+}
+
+.standalone-pages-group h2 {
   margin: 0 0 1rem;
   font-size: 1.35rem;
 }

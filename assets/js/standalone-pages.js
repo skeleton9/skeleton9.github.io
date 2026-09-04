@@ -18,40 +18,49 @@
 
     const section = document.createElement('section');
     section.className = 'standalone-pages';
-    section.setAttribute('aria-labelledby', 'standalone-pages-title');
+    section.setAttribute('aria-label', '独立页面');
 
-    const heading = document.createElement('h2');
-    heading.id = 'standalone-pages-title';
-    heading.textContent = '独立页面';
+    ['Tools', 'Pages'].forEach((groupName) => {
+      const groupPages = pages.filter((page) => page.group === groupName);
+      if (groupPages.length === 0) return;
 
-    const grid = document.createElement('div');
-    grid.className = 'standalone-pages-grid';
+      const group = document.createElement('div');
+      group.className = 'standalone-pages-group';
 
-    pages.forEach((page) => {
-      const link = document.createElement('a');
-      link.className = 'standalone-page-card';
-      link.href = `${baseUrl}${page.url}`.replace(/\/+/g, '/');
+      const heading = document.createElement('h2');
+      heading.textContent = groupName;
 
-      const icon = document.createElement('i');
-      icon.className = `fas ${page.icon || 'fa-file-lines'}`;
-      icon.setAttribute('aria-hidden', 'true');
+      const grid = document.createElement('div');
+      grid.className = 'standalone-pages-grid';
 
-      const copy = document.createElement('span');
-      const title = document.createElement('strong');
-      const description = document.createElement('small');
-      title.textContent = page.title;
-      description.textContent = page.description || '';
-      copy.append(title, description);
+      groupPages.forEach((page) => {
+        const link = document.createElement('a');
+        link.className = 'standalone-page-card';
+        link.href = `${baseUrl}${page.url}`.replace(/\/+/g, '/');
 
-      const arrow = document.createElement('i');
-      arrow.className = 'fas fa-arrow-right standalone-page-arrow';
-      arrow.setAttribute('aria-hidden', 'true');
+        const icon = document.createElement('i');
+        icon.className = `fas ${page.icon || 'fa-file-lines'}`;
+        icon.setAttribute('aria-hidden', 'true');
 
-      link.append(icon, copy, arrow);
-      grid.append(link);
+        const copy = document.createElement('span');
+        const title = document.createElement('strong');
+        const description = document.createElement('small');
+        title.textContent = page.title;
+        description.textContent = page.description || '';
+        copy.append(title, description);
+
+        const arrow = document.createElement('i');
+        arrow.className = 'fas fa-arrow-right standalone-page-arrow';
+        arrow.setAttribute('aria-hidden', 'true');
+
+        link.append(icon, copy, arrow);
+        grid.append(link);
+      });
+
+      group.append(heading, grid);
+      section.append(group);
     });
 
-    section.append(heading, grid);
     postList.parentNode.insertBefore(section, postList);
   }
 
