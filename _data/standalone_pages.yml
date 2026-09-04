@@ -1,0 +1,20 @@
+- title: 快排版
+  description: 小红书风格文本卡片生成器
+  url: /pages/kuaipaiban/
+  icon: fa-wand-magic-sparkles
+
+- title: 公众号排版预览
+  description: 微信公众号文章编辑与排版预览工具
+  url: /pages/wechat-formatter/
+  icon: fa-pen-to-square
+
+- title: 成年人的自我进化
+  description: 关于成长、行动与人生复利的单页视觉思考框架
+  url: /pages/m/adult-evolution.html
+  icon: fa-arrow-trend-up
+
+- title: 你不是世界的住客
+  description: 从适应世界到参与创造世界的单页视觉长文
+  url: /pages/m/stevejobs-shape-your-life.html
+  icon: fa-compass
+
