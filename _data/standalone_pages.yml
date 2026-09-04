@@ -16,6 +16,12 @@
   icon: fa-arrow-trend-up
   group: Pages
 
+- title: 如何赢得朋友并影响他人
+  description: 用一张可视化长页读懂核心原则、心理机制、应用场景与实践方法
+  url: /pages/m/how-to-win-friends-and-influence.html
+  icon: fa-handshake
+  group: Pages
+
 - title: 你不是世界的住客
   description: 从适应世界到参与创造世界的单页视觉长文
   url: /pages/m/stevejobs-shape-your-life.html

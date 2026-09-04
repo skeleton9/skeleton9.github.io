@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="用一张可视化长页读懂《如何赢得朋友并影响他人》：核心原则、心理机制、应用场景与实践方法。">
+  <title>如何赢得朋友并影响他人｜一本关于尊重与合作的行动指南</title>
+  <style>
+    :root{
+      --ink:#11131a;--paper:#f6f3eb;--white:#fffdf7;--blue:#2457ff;
+      --yellow:#ffd84d;--red:#e9543f;--muted:#62656f;--line:#c9c6bd;
+      --shadow:8px 8px 0 var(--ink);--radius:18px;--max:1180px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:84px}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;line-height:1.75;font-size:16px}
+    a{color:inherit} button{font:inherit}
+    .progress{position:fixed;z-index:99;top:0;left:0;width:0;height:5px;background:var(--blue)}
+    .topbar{position:sticky;z-index:90;top:0;background:rgba(246,243,235,.94);backdrop-filter:blur(12px);border-bottom:2px solid var(--ink)}
+    .topbar-inner{max-width:var(--max);margin:auto;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:14px 24px}
+    .brand{display:flex;align-items:center;gap:10px;font-size:.88rem;font-weight:900;letter-spacing:.08em;text-decoration:none}.brand-mark{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--yellow);border:2px solid var(--ink)}
+    nav{display:flex;gap:20px;font-size:.86rem;font-weight:750}nav a{text-decoration:none}nav a:hover{color:var(--blue)}
+    main{overflow:hidden}.wrap{max-width:var(--max);margin:auto;padding:0 24px}
+    .hero{position:relative;min-height:88vh;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);align-items:center;gap:64px;padding:72px 0 80px}
+    .kicker{display:inline-flex;align-items:center;gap:10px;margin:0 0 24px;font-size:.8rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.kicker:before{content:"";width:40px;height:4px;background:var(--red)}
+    h1{margin:0;font-size:clamp(3rem,7.2vw,6.7rem);line-height:.96;letter-spacing:-.065em;font-weight:950}.hero h1 em{display:block;color:var(--blue);font-style:normal}
+    .lede{max-width:780px;margin:30px 0 0;font-size:clamp(1.05rem,2vw,1.35rem);line-height:1.65}.lede strong{background:linear-gradient(transparent 58%,var(--yellow) 58%)}
+    .meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:32px;color:var(--muted);font-size:.86rem;font-weight:700}.meta span{padding:6px 12px;border:1.5px solid var(--ink);border-radius:999px;background:var(--white)}
+    .orbit{position:relative;aspect-ratio:1;display:grid;place-items:center}.orbit:before,.orbit:after{content:"";position:absolute;border:2px solid var(--ink);border-radius:50%;inset:8%}.orbit:after{inset:25%;border-style:dashed;animation:spin 24s linear infinite}.orbit-core{z-index:2;width:45%;aspect-ratio:1;display:grid;place-items:center;text-align:center;border-radius:50%;border:3px solid var(--ink);background:var(--yellow);font-weight:950;font-size:clamp(1.2rem,3vw,2rem);line-height:1.15;box-shadow:6px 6px 0 var(--ink)}
+    .sat{position:absolute;padding:7px 12px;border:2px solid var(--ink);background:var(--white);font-weight:850;font-size:.86rem;box-shadow:3px 3px 0 var(--ink)}.s1{top:4%;left:35%}.s2{right:0;top:43%}.s3{bottom:5%;left:37%}.s4{left:0;top:43%}@keyframes spin{to{transform:rotate(360deg)}}
+    section{padding:96px 0;border-top:2px solid var(--ink)}.section-head{display:grid;grid-template-columns:120px 1fr;gap:28px;align-items:start;margin-bottom:52px}.num{font-size:5rem;line-height:.8;font-weight:950;color:transparent;-webkit-text-stroke:2px var(--ink)}h2{margin:0;font-size:clamp(2rem,5vw,4.2rem);line-height:1.05;letter-spacing:-.045em}h3{margin:0 0 10px;font-size:1.25rem;line-height:1.35}.section-intro{max-width:720px;margin:16px 0 0;color:var(--muted);font-size:1.05rem}
+    .manifesto{background:var(--ink);color:var(--white)}.manifesto .wrap{display:grid;grid-template-columns:.7fr 1.3fr;gap:72px;align-items:center}.manifesto blockquote{margin:0;font-size:clamp(2rem,4.7vw,4rem);font-weight:900;line-height:1.18;letter-spacing:-.04em}.manifesto blockquote mark{color:var(--ink);background:var(--yellow);padding:0 .12em}.manifesto p{color:#c9cad0;font-size:1.05rem}.manifesto .small{font-size:.85rem;color:#92959f}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}.card{position:relative;padding:28px;border:2px solid var(--ink);border-radius:var(--radius);background:var(--white);box-shadow:var(--shadow)}.card-tag{display:inline-block;margin-bottom:18px;padding:4px 10px;border:1.5px solid var(--ink);border-radius:999px;background:var(--yellow);font-weight:900;font-size:.75rem;letter-spacing:.08em}.card p{margin:0;color:var(--muted)}.card .big{display:block;margin:12px 0 8px;font-size:2.4rem;line-height:1;font-weight:950;color:var(--blue)}
+    .parts{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}.part{min-height:320px;padding:34px;border:2px solid var(--ink);border-radius:24px;background:var(--white);position:relative;overflow:hidden}.part:nth-child(2){background:var(--yellow)}.part:nth-child(3){background:var(--blue);color:white}.part:nth-child(3) p,.part:nth-child(3) li{color:#e6ebff}.part-no{font-size:.78rem;font-weight:900;letter-spacing:.13em}.part h3{margin:24px 0 14px;font-size:clamp(1.45rem,3vw,2.25rem)}.part ul{margin:18px 0 0;padding-left:1.2em}.part li{margin:7px 0;color:var(--muted)}
+    .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:stretch}.flow-step{padding:24px 15px;border:2px solid var(--ink);background:var(--white);text-align:center;font-weight:900;position:relative}.flow-step:not(:last-child):after{content:"→";position:absolute;z-index:2;right:-18px;top:50%;transform:translateY(-50%);width:26px;height:26px;display:grid;place-items:center;border:2px solid var(--ink);border-radius:50%;background:var(--yellow);font-size:.85rem}.flow-step span{display:block;margin-bottom:10px;color:var(--blue);font-size:1.7rem}.formula{margin-top:34px;padding:30px;border-left:10px solid var(--blue);background:var(--ink);color:white;font-size:clamp(1.15rem,2.4vw,1.7rem);font-weight:850}
+    .principle-list{border-top:2px solid var(--ink)}details{border-bottom:2px solid var(--ink);background:transparent}summary{cursor:pointer;list-style:none;display:grid;grid-template-columns:54px 1fr 30px;gap:18px;align-items:center;padding:24px 8px;font-size:clamp(1.05rem,2vw,1.35rem);font-weight:900}summary::-webkit-details-marker{display:none}.pno{color:var(--blue);font-size:.85rem}.plus{font-size:1.6rem;transition:.25s}details[open] .plus{transform:rotate(45deg)}.detail-body{display:grid;grid-template-columns:1fr 1fr;gap:32px;padding:0 8px 28px 80px}.detail-body p{margin:0}.avoid{color:var(--muted)}.say{padding:18px;background:var(--white);border-left:5px solid var(--yellow);font-weight:700}
+    .scenes{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.scene{padding:28px;border:2px solid var(--ink);background:var(--white)}.scene-icon{font-size:2rem;margin-bottom:16px}.scene h3{font-size:1.35rem}.scene .bad,.scene .good{margin-top:18px;padding:16px;font-size:.92rem}.scene .bad{background:#f2e5e1;color:#6b332b}.scene .good{background:#e7edff;color:#183585}.label{display:block;margin-bottom:5px;font-size:.7rem;letter-spacing:.12em;font-weight:950}
+    .boundary{background:var(--yellow)}.boundary-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px}.boundary h3{font-size:1.8rem}.checks{display:grid;gap:14px}.check{padding:18px 20px;border:2px solid var(--ink);background:var(--white);font-weight:750}.check:before{content:"✓";display:inline-grid;place-items:center;width:27px;height:27px;margin-right:12px;border-radius:50%;background:var(--ink);color:white}
+    .practice{display:grid;grid-template-columns:.8fr 1.2fr;gap:60px;align-items:start}.week{position:sticky;top:100px;padding:34px;border:2px solid var(--ink);border-radius:24px;background:var(--blue);color:white;box-shadow:var(--shadow)}.week strong{display:block;font-size:4.5rem;line-height:1}.days{display:grid;gap:16px}.day{display:grid;grid-template-columns:70px 1fr;gap:20px;padding:20px 0;border-bottom:1.5px solid var(--line)}.day:last-child{border-bottom:0}.day b{color:var(--blue)}.day p{margin:0;color:var(--muted)}
+    .final{padding:100px 0;background:var(--ink);color:var(--white);text-align:center}.final p{max-width:900px;margin:0 auto;font-size:clamp(1.8rem,4.6vw,4.4rem);line-height:1.15;font-weight:950;letter-spacing:-.04em}.final em{color:var(--yellow);font-style:normal}.final small{display:block;margin-top:32px;color:#9fa2ab;font-size:.9rem;letter-spacing:.06em}
+    @media(max-width:900px){nav{display:none}.hero{grid-template-columns:1fr;min-height:auto;padding-top:60px}.orbit{max-width:420px;width:90%;margin:auto}.manifesto .wrap,.practice{grid-template-columns:1fr}.cards,.scenes{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.flow-step:not(:last-child):after{content:"↓";right:auto;left:50%;top:auto;bottom:-19px;transform:translateX(-50%)}.week{position:static}.boundary-grid{grid-template-columns:1fr}.section-head{grid-template-columns:80px 1fr}.num{font-size:3.6rem}}
+    @media(max-width:620px){.wrap,.topbar-inner{padding-left:18px;padding-right:18px}.hero{gap:42px}.parts{grid-template-columns:1fr}.part{min-height:auto}.section-head{grid-template-columns:1fr;gap:14px}.num{font-size:2.8rem}.detail-body{grid-template-columns:1fr;padding-left:8px}.day{grid-template-columns:52px 1fr}section{padding:72px 0}.manifesto .wrap{gap:32px}.orbit{font-size:.75rem}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.orbit:after{animation:none}}
+  </style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <header class="topbar"><div class="topbar-inner">
+    <a class="brand" href="#top"><span class="brand-mark">人</span>卡耐基 · 关系指南</a>
+    <nav aria-label="页面导航"><a href="#core">核心</a><a href="#parts">四部分</a><a href="#principles">原则</a><a href="#scenes">应用</a><a href="#practice">实践</a></nav>
+  </div></header>
+  <main id="top">
+    <div class="wrap"><section class="hero">
+      <div><p class="kicker">Dale Carnegie · 1936</p><h1>如何赢得朋友<em>并影响他人</em></h1>
+        <p class="lede">这不是一本教人“讨好”的书，而是一套关于<strong>尊重、理解、合作</strong>的底层方法：减少抵触，建立连接，让改变在保留尊严的前提下发生。</p>
+        <div class="meta"><span>中文版常译《人性的弱点》</span><span>4 个部分</span><span>30 条原则</span></div>
+      </div>
+      <div class="orbit" aria-label="影响力来自理解、尊重、利益与自主">
+        <div class="sat s1">理解</div><div class="sat s2">尊重</div><div class="sat s3">利益</div><div class="sat s4">自主</div><div class="orbit-core">合作<br>而非控制</div>
+      </div>
+    </section></div>
+
+    <section class="manifesto" id="core"><div class="wrap">
+      <div><p class="kicker">全书的一个洞察</p><p class="small">人很少因为被驳倒而改变，却常因被理解而愿意重新思考。</p></div>
+      <blockquote>先进入<mark>对方的世界</mark>，再邀请对方进入你的世界。</blockquote>
+    </div></section>
+
+    <section><div class="wrap">
+      <div class="section-head"><div class="num">01</div><div><h2>人际关系为什么会卡住？</h2><p class="section-intro">许多冲突不是事实之争，而是自尊、防御与控制感之间的碰撞。先理解心理机制，技巧才不会变成话术。</p></div></div>
+      <div class="cards">
+        <article class="card"><span class="card-tag">自尊</span><span class="big">01</span><h3>人会保护自己的形象</h3><p>直接批评容易让人忙于辩护，而不是反思。攻击人格，通常只会制造更坚硬的立场。</p></article>
+        <article class="card"><span class="card-tag">重要感</span><span class="big">02</span><h3>人人都渴望被看见</h3><p>真诚、具体的认可告诉对方：你的努力有价值，你不是一个可以随时被替代的工具。</p></article>
+        <article class="card"><span class="card-tag">自主</span><span class="big">03</span><h3>人抗拒被强迫</h3><p>参与形成的决定，更容易被执行。高质量影响不是替对方决定，而是帮助他自己得出结论。</p></article>
+      </div>
+    </div></section>
+
+    <section id="parts"><div class="wrap">
+      <div class="section-head"><div class="num">02</div><div><h2>全书的四个部分</h2><p class="section-intro">从减少敌意，到建立好感、赢得认同，再到不伤害自尊地推动改变。</p></div></div>
+      <div class="parts">
+        <article class="part"><span class="part-no">PART 01 · 相处</span><h3>处理人际关系的基本技巧</h3><ul><li>不批评、不责备、不抱怨</li><li>给予真诚、诚恳的赞赏</li><li>激发对方内心强烈的需求</li></ul></article>
+        <article class="part"><span class="part-no">PART 02 · 连接</span><h3>让别人喜欢你的六种方法</h3><ul><li>真诚关心；保持友善</li><li>记住名字；认真倾听</li><li>谈对方感兴趣的话题</li><li>让对方感到重要，而且必须真诚</li></ul></article>
+        <article class="part"><span class="part-no">PART 03 · 影响</span><h3>让别人接受你的观点</h3><ul><li>避免争论，尊重不同观点</li><li>错了就迅速而真诚地承认</li><li>从友善与共同目标开始</li><li>让对方多说，并参与形成方案</li></ul></article>
+        <article class="part"><span class="part-no">PART 04 · 领导</span><h3>不引起反感地改变他人</h3><ul><li>先肯定，再指出具体问题</li><li>用提问代替命令</li><li>给对方保留面子</li><li>表扬进步，建立积极身份</li></ul></article>
+      </div>
+    </div></section>
+
+    <section><div class="wrap">
+      <div class="section-head"><div class="num">03</div><div><h2>现代沟通的五步公式</h2><p class="section-intro">卡耐基的几十条原则，可以转化为一个在管理、销售、家庭沟通中都适用的动作链。</p></div></div>
+      <div class="flow"><div class="flow-step"><span>①</span>观察事实</div><div class="flow-step"><span>②</span>理解感受</div><div class="flow-step"><span>③</span>承认价值</div><div class="flow-step"><span>④</span>连接利益</div><div class="flow-step"><span>⑤</span>邀请参与</div></div>
+      <div class="formula">“这次版本晚了三天。我猜你最近承担的任务很集中；前面支付问题的解决非常关键。但继续延迟会影响客户上线。你觉得怎样调整范围，能确保周五交付核心功能？”</div>
+    </div></section>
+
+    <section id="principles"><div class="wrap">
+      <div class="section-head"><div class="num">04</div><div><h2>最值得记住的十条原则</h2><p class="section-intro">点击每一条，查看它解决什么问题，以及怎样把本能反应换成更有效的表达。</p></div></div>
+      <div class="principle-list">
+        <details open><summary><span class="pno">01</span><span>不急于批评，先理解原因</span><span class="plus">＋</span></summary><div class="detail-body"><p class="avoid">批评会触发自我保护。把“你这个人有问题”，改成共同检查发生了什么。</p><p class="say">试着说：“我们一起看看，是任务估计有问题，还是中间遇到了障碍？”</p></div></details>
+        <details><summary><span class="pno">02</span><span>给予真诚、具体的赞赏</span><span class="plus">＋</span></summary><div class="detail-body"><p class="avoid">空泛夸奖只是糖衣。指出行为、影响和真实感受，才会让人感到被看见。</p><p class="say">“你先复述客户的担忧，让紧张的对话缓和了下来，这个处理很成熟。”</p></div></details>
+        <details><summary><span class="pno">03</span><span>从对方的需求出发</span><span class="plus">＋</span></summary><div class="detail-body"><p class="avoid">别人首先关心的不是你想要什么，而是自己会得到什么、避免失去什么。</p><p class="say">先问：“对方原本想要什么？我的建议如何帮助他得到它？”</p></div></details>
+        <details><summary><span class="pno">04</span><span>多听，让对方充分表达</span><span class="plus">＋</span></summary><div class="detail-body"><p class="avoid">倾听有三层：听见事实、理解感受、识别需要。不要急着用建议覆盖情绪。</p><p class="say">“听起来不只是任务多，而是付出了很多，却看不到结果。是这样吗？”</p></div></details>
+        <details><summary><span class="pno">05</span><span>尊重观点，不直接说“你错了”</span><span class="plus">＋</span></summary><div class="detail-body"><p class="avoid">直接否定容易被理解为对判断能力的攻击，把对抗变成共同检查前提。</p><p class="say">“如果这个前提成立，结论是合理的。我不确定的是，这个前提是否一直成立。”</p></div></details>
+        <details><summary><span class="pno">06</span><span>自己错了，迅速承认</span><span class="plus">＋</span></summary><div class="detail-body"><p class="avoid">明确事实与影响，不用“沟通上都有问题”稀释责任，也不要立刻寻找借口。</p><p class="say">“这个判断是我做错了，导致团队后面很被动。我会调整范围并负责对外沟通。”</p></div></details>
+        <details><summary><span class="pno">07</span><span>避免争论输赢，寻找共同目标</span><span class="plus">＋</span></summary><div class="detail-body"><p class="avoid">逻辑上赢了，关系上也可能输。先确认双方真正想解决的是什么。</p><p class="say">“我们都希望产品按时上线。现在有两个风险，一起看看怎么处理。”</p></div></details>
+        <details><summary><span class="pno">08</span><span>用提问和参与感代替命令</span><span class="plus">＋</span></summary><div class="detail-body"><p class="avoid">提问保留自主感，但不要把不可选择的命令伪装成虚假问题。</p><p class="say">“如果由你决定，你会先解决哪一步？需要我提供什么支持？”</p></div></details>
+        <details><summary><span class="pno">09</span><span>指出问题时保留尊严</span><span class="plus">＋</span></summary><div class="detail-body"><p class="avoid">私下沟通、区分行为和人格、不翻旧账。目标是减少下次错误，而不是让人难受。</p><p class="say">“这次判断有偏差，但不否定你此前的贡献。我们聚焦补救和新的检查机制。”</p></div></details>
+        <details><summary><span class="pno">10</span><span>不把人际技巧当作操控术</span><span class="plus">＋</span></summary><div class="detail-body"><p class="avoid">如果关心、赞赏、记名字只是为了成交，所有技巧最终都会暴露出工具感。</p><p class="say">先确认：“即使对方不能给我回报，我是否仍愿意保持这种尊重？”</p></div></details>
+      </div>
+    </div></section>
+
+    <section id="scenes"><div class="wrap">
+      <div class="section-head"><div class="num">05</div><div><h2>三个高频应用场景</h2><p class="section-intro">原则的价值不在背诵，而在你最容易失去耐心的时刻，仍能选择有效表达。</p></div></div>
+      <div class="scenes">
+        <article class="scene"><div class="scene-icon">◩</div><h3>团队管理</h3><div class="bad"><span class="label">本能反应</span>“你为什么每次都拖延？”</div><div class="good"><span class="label">更有效</span>说清事实和影响，再共同定位障碍，确认下一步与责任。</div></article>
+        <article class="scene"><div class="scene-icon">◎</div><h3>产品与销售</h3><div class="bad"><span class="label">本能反应</span>反复介绍功能和技术优势。</div><div class="good"><span class="label">更有效</span>理解用户想获得的进步，把能力翻译成与其生活相关的结果。</div></article>
+        <article class="scene"><div class="scene-icon">◇</div><h3>家庭关系</h3><div class="bad"><span class="label">本能反应</span>“我是为你好，你应该听我的。”</div><div class="good"><span class="label">更有效</span>先听见担忧与愿望，说明共同目标，保留对方做决定的空间。</div></article>
+      </div>
+    </div></section>
+
+    <section class="boundary"><div class="wrap">
+      <div class="section-head"><div class="num">06</div><div><h2>温和，不等于没有边界</h2><p class="section-intro">卡耐基方法的前提是真诚与尊重；它不能替代责任、制度，也不能要求一个人永远压抑自己。</p></div></div>
+      <div class="boundary-grid"><div><h3>不要误读成：</h3><p>不批评＝纵容；尊重＝同意；友善＝讨好；激励＝情绪绑架；避免争论＝放弃立场。</p><p>涉及安全、诚信、违法和严重失职时，必须清楚说明事实、标准、影响与后果。</p></div><div class="checks"><div class="check">对事提出要求，对人保留尊严</div><div class="check">人性沟通与机制建设同时存在</div><div class="check">真正的提问必须允许真实回答</div><div class="check">无法真诚认可时，不做虚假赞美</div></div></div>
+    </div></section>
+
+    <section id="practice"><div class="wrap practice">
+      <aside class="week"><span>7 天微练习</span><strong>从一次<br>暂停开始</strong><p>不要试图一次掌握三十条原则。每天练一个动作，让它先进入真实对话。</p></aside>
+      <div class="days">
+        <div class="day"><b>DAY 1</b><p>今天不做人格评价，只描述你真正观察到的事实。</p></div>
+        <div class="day"><b>DAY 2</b><p>给一个人一次具体赞赏：行为是什么，带来了什么影响。</p></div>
+        <div class="day"><b>DAY 3</b><p>一次谈话中，追问两个问题，在完全听完前不讲自己的经历。</p></div>
+        <div class="day"><b>DAY 4</b><p>在提出建议前，写下对方想得到什么、害怕失去什么。</p></div>
+        <div class="day"><b>DAY 5</b><p>遇到不同意见，不说“你错了”，共同检查分歧背后的前提。</p></div>
+        <div class="day"><b>DAY 6</b><p>把一个命令改成真诚提问，让执行者参与形成方案。</p></div>
+        <div class="day"><b>DAY 7</b><p>复盘一次冲突：哪句话制造了防御？下次可以怎样重说？</p></div>
+      </div>
+    </div></section>
+
+    <footer class="final"><div class="wrap"><p>真正有影响力的人，不是声音最大的人，而是能让别人感到<em>被理解、被尊重，并愿意一起行动</em>的人。</p><small>HOW TO WIN FRIENDS AND INFLUENCE PEOPLE · VISUAL READING NOTE</small></div></footer>
+  </main>
+  <script>
+    const bar=document.getElementById('progress');
+    const update=()=>{const h=document.documentElement;const max=h.scrollHeight-h.clientHeight;bar.style.width=(max?100*h.scrollTop/max:0)+'%'};
+    addEventListener('scroll',update,{passive:true});update();
+  </script>
+</body>
+</html>
