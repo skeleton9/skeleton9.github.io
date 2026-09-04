@@ -20,7 +20,7 @@
     section.className = 'standalone-pages';
     section.setAttribute('aria-label', '独立页面');
 
-    ['Tools', 'Pages'].forEach((groupName) => {
+    ['Tools', 'Pages', 'Games'].forEach((groupName) => {
       const groupPages = pages.filter((page) => page.group === groupName);
       if (groupPages.length === 0) return;
 

@@ -27,3 +27,39 @@
   url: /pages/m/stevejobs-shape-your-life.html
   icon: fa-compass
   group: Pages
+
+- title: "2048"
+  description: 合并数字方块，挑战更高分数
+  url: /pages/games/2048.html
+  icon: fa-table-cells-large
+  group: Games
+
+- title: 骰子大冒险
+  description: 投掷骰子展开一场轻松的冒险
+  url: /pages/games/dice-adventure.html
+  icon: fa-dice
+  group: Games
+
+- title: 连连看
+  description: 找出并连接相同图案
+  url: /pages/games/lianliankan.html
+  icon: fa-link
+  group: Games
+
+- title: 消消乐
+  description: 匹配三个相同元素完成消除
+  url: /pages/games/match3.html
+  icon: fa-gem
+  group: Games
+
+- title: 翻牌记忆
+  description: 翻开卡片并找出所有配对
+  url: /pages/games/memory.html
+  icon: fa-brain
+  group: Games
+
+- title: 俄罗斯方块
+  description: 旋转和排列方块，消除完整行
+  url: /pages/games/tetris.html
+  icon: fa-shapes
+  group: Games

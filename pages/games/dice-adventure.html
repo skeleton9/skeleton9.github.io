@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0f1626">
+<title>骰子大冒险 · Dice Adventure</title>
+<style>
+  :root {
+    --bg: #0f1626; --bg2: #1a2438; --panel: #1f2a40;
+    --accent: #4ecdc4; --accent2: #ffd166; --danger: #ef476f;
+    --text: #e8eef5; --text-dim: #8a96ad;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overscroll-behavior: none; }
+  body {
+    background: radial-gradient(ellipse at 50% 0%, #1a2438 0%, var(--bg) 60%);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", "Noto Sans SC", sans-serif;
+    -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation; display: flex; justify-content: center; min-height: 100%;
+  }
+  .wrap { width: min(96vw, 480px); min-height: 100%; display: flex; flex-direction: column;
+    padding: calc(12px + env(safe-area-inset-top)) 0 calc(12px + env(safe-area-inset-bottom)); }
+
+  header { padding: 0 4px 10px; }
+  .row-1 { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
+  .title-block { display: flex; flex-direction: column; }
+  h1 { font-size: 22px; font-weight: 900; letter-spacing: -.5px; line-height: 1; }
+  .subtitle { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+
+  .players { display: flex; gap: 6px; margin-bottom: 8px; }
+  .pcard { flex: 1; background: var(--bg2); border-radius: 9px; padding: 6px 4px; text-align: center;
+    border: 2px solid transparent; transition: border-color .2s, transform .15s; }
+  .pcard.active { border-color: var(--accent); transform: translateY(-2px); }
+  .pcard .pe { font-size: 20px; line-height: 1; }
+  .pcard .pname { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+  .pcard .ppos { font-size: 12px; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+  .banner { min-height: 20px; text-align: center; font-size: 13px; font-weight: 700; color: var(--accent2);
+    opacity: 0; transition: opacity .25s; margin-bottom: 6px; }
+  .banner.show { opacity: 1; }
+
+  .board-wrap { display: flex; justify-content: center; position: relative; }
+  .board { width: 100%; height: auto; display: block; border-radius: 14px;
+    image-rendering: pixelated; image-rendering: crisp-edges;
+    background: #16203a; box-shadow: 0 8px 24px rgba(0,0,0,.4); }
+  /* 角色覆盖层：与棋盘完全重叠、同尺寸、1:1 渲染、不像素化、点击穿透 */
+  .tokens { position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    border-radius: 14px; pointer-events: none; z-index: 4; }
+
+  /* 摇骰子大动画层：覆盖棋盘、半透明遮罩 + 居中大骰子 */
+  .roll-overlay { position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 14px; opacity: 0; pointer-events: none;
+    background: rgba(10,16,28,.55); border-radius: 14px; transition: opacity .18s; z-index: 5; }
+  .roll-overlay.show { opacity: 1; }
+  .roll-die { width: 104px; height: 104px; perspective: 420px; transform: scale(1); }
+  .roll-die.rolling { animation: dieShake .12s linear infinite; }
+  .roll-die.settle { animation: dieSettle .42s cubic-bezier(.2,1.4,.4,1) both; }
+  /* 立体骰子：CSS 3D 立方体，6 面各有点数 */
+  .die-cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d;
+    transform: rotateX(0deg) rotateY(0deg); }
+  .die-face { position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+    display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: repeat(3,1fr);
+    padding: 14px; box-sizing: border-box; align-items: center; justify-items: center;
+    background: linear-gradient(145deg, #ffffff 0%, #e8ecf2 100%);
+    border-radius: 18px; box-shadow: 0 0 0 1px rgba(0,0,0,.06), inset 0 -3px 0 rgba(0,0,0,.12);
+    backface-visibility: hidden; }
+  .die-face.f-front  { transform: rotateY(0deg)    translateZ(52px); }
+  .die-face.f-back   { transform: rotateY(180deg)  translateZ(52px); }
+  .die-face.f-right  { transform: rotateY(90deg)   translateZ(52px); }
+  .die-face.f-left   { transform: rotateY(-90deg)  translateZ(52px); }
+  .die-face.f-top    { transform: rotateX(90deg)   translateZ(52px); }
+  .die-face.f-bottom { transform: rotateX(-90deg)  translateZ(52px); }
+  .die-face i { width: 15px; height: 15px; border-radius: 50%; display: block;
+    box-shadow: inset 0 -2px 0 rgba(0,0,0,.22), 0 1px 2px rgba(0,0,0,.18); }
+  .die-face i.off { background: transparent; box-shadow: none; }   /* 未点亮的格不显示任何圆点 */
+  .die-face i.on { background: #2b2b3a; }
+  @keyframes dieShake {
+    0% { transform: rotate(-16deg) scale(1.05); }
+    50% { transform: rotate(16deg) scale(.95); }
+    100% { transform: rotate(-16deg) scale(1.05); }
+  }
+  @keyframes dieSettle {
+    0% { transform: rotate(-22deg) scale(1.35); }
+    60% { transform: rotate(10deg) scale(.9); }
+    100% { transform: rotate(0) scale(1); }
+  }
+  .roll-tip { font-size: 15px; font-weight: 800; color: var(--text); letter-spacing: 1px;
+    text-shadow: 0 2px 6px rgba(0,0,0,.6); }
+
+  /* 特殊事件大动画层（火箭/陷阱/回退/停一轮） */
+  .fx-overlay { position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 14px; opacity: 0; pointer-events: none;
+    background: rgba(10,16,28,.55); border-radius: 14px; transition: opacity .18s; z-index: 5; }
+  .fx-overlay.show { opacity: 1; }
+  .fx-icon { font-size: 92px; line-height: 1; filter: drop-shadow(0 8px 18px rgba(0,0,0,.5));
+    transform: scale(.4); }
+  .fx-overlay.show .fx-icon { animation: fxPop .46s cubic-bezier(.2,1.5,.4,1) both; }
+  @keyframes fxPop {
+    0% { transform: scale(.4) rotate(-12deg); }
+    60% { transform: scale(1.18) rotate(8deg); }
+    100% { transform: scale(1) rotate(0); }
+  }
+  .fx-tip { font-size: 16px; font-weight: 900; letter-spacing: 1px; text-align: center;
+    padding: 6px 14px; border-radius: 999px; color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,.6); }
+
+  .controls { display: flex; gap: 8px; margin-top: 12px; align-items: stretch; justify-content: space-between; }
+  .side-btns { display: flex; gap: 6px; align-items: stretch; }
+  .side-btns .btn.ghost { flex: 0 0 auto; min-width: 0; padding: 14px 12px; font-size: 12px; }
+  .roll-group { display: flex; gap: 8px; align-items: stretch; flex: 1; }
+  .die { flex: 0 0 52px; background: var(--bg2); border-radius: 10px; display: flex;
+    align-items: center; justify-content: center; font-size: 30px; }
+  .btn { flex: 1; background: linear-gradient(180deg, var(--accent), #3bb3aa); color: #06231f;
+    border: none; border-radius: 10px; font-weight: 800; cursor: pointer; font-family: inherit;
+    -webkit-tap-highlight-color: transparent; transition: transform .08s, filter .15s; font-size: 15px; padding: 14px 0; }
+  .btn:active { transform: scale(.96); filter: brightness(1.08); }
+  .btn.ghost { background: transparent; border: 1px solid #2c3a55; color: var(--text-dim); flex: 0 0 30%; font-size: 13px; }
+  .btn.primary { background: linear-gradient(180deg, var(--accent2), #f0b73f); color: #3a2a00; }
+  .btn:disabled { opacity: .45; }
+
+  .foot { text-align: center; font-size: 10px; color: var(--text-dim); padding: 8px 6px 0; line-height: 1.6; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 10px; justify-content: center; margin-top: 8px; font-size: 10px; color: var(--text-dim); }
+  .legend span { display: inline-flex; align-items: center; gap: 3px; }
+
+  .overlay { position: fixed; inset: 0; background: rgba(10,16,28,.88); -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px); display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 24px; opacity: 0; pointer-events: none; transition: opacity .3s; z-index: 100; }
+  .overlay.show { opacity: 1; pointer-events: auto; }
+  .overlay h2 { font-size: 26px; font-weight: 900; letter-spacing: -1px; margin-bottom: 4px; text-align: center; }
+  .overlay .sub { font-size: 13px; color: var(--text-dim); margin-bottom: 16px; text-align: center; line-height: 1.7; }
+  .overlay .big { font-size: 34px; font-weight: 900; margin: 6px 0; }
+  .sec-label { font-size: 11px; color: var(--text-dim); letter-spacing: 1px; margin: 12px 0 6px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: 320px; }
+  .chip { padding: 8px 12px; border-radius: 9px; background: var(--bg2); color: var(--text); font-weight: 700;
+    font-size: 13px; border: 2px solid transparent; cursor: pointer; }
+  .chip.sel { border-color: var(--accent); color: var(--accent); }
+  .overlay .actions { width: 100%; max-width: 280px; margin-top: 18px; }
+  .overlay .actions .btn { width: 100%; padding: 13px 0; }
+
+  /* Lost Relic visual system */
+  :root {
+    --bg:#0d100f; --bg2:#171b18; --panel:#20231e; --stone:#292c25;
+    --accent:#b9934b; --accent2:#d8b765; --danger:#a44d3f;
+    --text:#eee6d2; --text-dim:#9e998b; --rune:#65a99d;
+  }
+  body {
+    background:
+      radial-gradient(circle at 50% -10%, rgba(180,132,61,.19), transparent 35%),
+      linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.014) 1px, transparent 1px), #0d100f;
+    background-size:auto, 34px 34px, 34px 34px, auto;
+    font-family:"Avenir Next","PingFang SC","Microsoft YaHei",sans-serif;
+  }
+  body::before, body::after { content:""; position:fixed; width:220px; height:220px; border-radius:50%;
+    filter:blur(80px); opacity:.09; pointer-events:none; animation:torch 5s ease-in-out infinite alternate; }
+  body::before { background:#d58b3f; left:-110px; top:22%; }
+  body::after { background:#4f9e8f; right:-120px; bottom:15%; animation-delay:-2s; }
+  @keyframes torch { to { opacity:.16; transform:scale(1.18) translateY(-12px); } }
+  .wrap { width:min(94vw,500px); padding-top:calc(14px + env(safe-area-inset-top)); }
+  header { padding:0 2px 8px; }
+  .row-1 { align-items:center; margin-bottom:10px; }
+  h1 { font-family:Georgia,"Songti SC",serif; font-size:25px; letter-spacing:2px; color:#f1dfb6; text-shadow:0 2px 0 #49361d; }
+  .title-mark { color:var(--accent2); font-size:14px; vertical-align:3px; }
+  .subtitle { color:#79766c; letter-spacing:2.4px; font-size:9px; font-weight:700; text-transform:uppercase; }
+  .players { gap:7px; margin-bottom:6px; }
+  .pcard { position:relative; overflow:hidden; background:linear-gradient(145deg,#24271f,#171a17); border:1px solid #383a31;
+    border-radius:6px; padding:7px 4px 6px; box-shadow:inset 0 1px rgba(255,255,255,.04),0 3px 8px rgba(0,0,0,.25); }
+  .pcard::before { content:""; position:absolute; left:0; right:0; top:0; height:2px; background:#3a3b32; }
+  .pcard.active { border-color:var(--accent); transform:translateY(-3px); box-shadow:0 0 0 1px rgba(185,147,75,.25),0 7px 14px rgba(0,0,0,.4); }
+  .pcard.active::before { background:var(--accent2); }
+  .pcard .pe { font-size:22px; filter:drop-shadow(0 2px 1px #000); }
+  .pcard .pname { color:#858277; letter-spacing:1px; font-size:9px; }
+  .pcard .ppos { color:#d5c7a7; font-size:13px; }
+  .pcard .ppos::before { content:"石板 "; color:#66665e; font-size:8px; font-weight:600; }
+  .banner { position:absolute; z-index:9; left:50%; transform:translateX(-50%); top:112px; width:max-content; max-width:90%;
+    min-height:0; margin:0; padding:7px 13px; color:#f1dfb6; background:rgba(24,25,21,.94); border:1px solid #665536;
+    border-radius:4px; box-shadow:0 7px 18px rgba(0,0,0,.45); font-size:11px; letter-spacing:.5px; }
+  .board-wrap { padding:7px; background:linear-gradient(145deg,#4a4638,#1a1c19); border:1px solid #625b46;
+    box-shadow:inset 0 0 0 3px #252720,inset 0 0 24px #050606,0 16px 38px rgba(0,0,0,.55); clip-path:polygon(2% 0,98% 0,100% 2%,100% 98%,98% 100%,2% 100%,0 98%,0 2%); }
+  .board { border-radius:2px; background:#101511; box-shadow:inset 0 0 28px #000; }
+  .tokens,.roll-overlay,.fx-overlay { border-radius:2px; }
+  .roll-overlay,.fx-overlay { inset:7px; background:rgba(7,9,8,.76); backdrop-filter:blur(2px); }
+  .controls { gap:8px; margin-top:13px; }
+  .side-btns { gap:5px; }
+  .side-btns .btn.ghost { width:48px; padding:10px 5px; font-size:10px; }
+  .roll-group { min-height:58px; }
+  .die { flex-basis:57px; border-radius:5px; border:1px solid #4b4638; background:linear-gradient(145deg,#282820,#151713); box-shadow:inset 0 0 0 2px #20221d; }
+  .btn { border-radius:5px; letter-spacing:.8px; }
+  .btn.primary { position:relative; background:linear-gradient(180deg,#d7b766,#a77d39); color:#231a0c; border:1px solid #e2c77b;
+    box-shadow:inset 0 1px rgba(255,255,255,.3),inset 0 -3px rgba(64,40,12,.28),0 5px 12px rgba(0,0,0,.35); font-size:15px; }
+  .btn.primary:hover { filter:brightness(1.08); }
+  .btn.primary:active { transform:translateY(2px); box-shadow:inset 0 2px 4px rgba(0,0,0,.25); }
+  .btn-kicker { display:block; font-size:7px; letter-spacing:2px; opacity:.65; margin-bottom:1px; }
+  .btn.ghost { color:#aaa28e; border-color:#45453b; background:linear-gradient(#22251f,#171916); }
+  .legend { margin-top:10px; gap:5px; }
+  .legend span { flex:1 1 22%; justify-content:center; border:1px solid #32342d; background:#171916; padding:5px 3px; border-radius:3px; font-size:8px; color:#858277; }
+  .legend span:first-child { color:#6fb5a8; }.legend span:nth-child(2){color:#bd6b58}.legend span:nth-child(3){color:#8f82ad}.legend span:last-child{color:#c9a650}
+  .foot { color:#5f6059; font-size:9px; letter-spacing:.3px; }
+  .overlay { background:radial-gradient(circle at 50% 20%,rgba(116,86,44,.18),transparent 35%),rgba(8,10,9,.92); padding:20px; }
+  .overlay::before { content:""; position:absolute; inset:18px; border:1px solid rgba(185,147,75,.24); pointer-events:none; clip-path:polygon(20px 0,calc(100% - 20px) 0,100% 20px,100% calc(100% - 20px),calc(100% - 20px) 100%,20px 100%,0 calc(100% - 20px),0 20px); }
+  .overlay h2 { font-family:Georgia,"Songti SC",serif; color:#ead9b2; letter-spacing:4px; font-size:30px; text-shadow:0 3px #2c2112; }
+  .overlay .sub { color:#969083; max-width:340px; }
+  .relic-seal { width:58px; height:58px; display:grid; place-items:center; color:#d5b15e; font-size:25px; margin-bottom:8px;
+    border:1px solid #755e31; transform:rotate(45deg); background:#171a16; box-shadow:inset 0 0 0 4px #24251e,0 8px 20px #050505; }
+  .relic-seal::first-letter { transform:rotate(-45deg); }
+  .eyebrow { margin:10px 0 4px; color:#8f7441; letter-spacing:4px; font-size:8px; font-weight:800; }
+  .sec-label { color:#7f755f; letter-spacing:2px; margin-top:14px; }
+  .chips { max-width:360px; gap:7px; }
+  .chip { background:#191c18; border:1px solid #3a3c33; border-radius:4px; padding:8px 11px; font-size:11px; color:#aaa18e; }
+  .chip.sel { border-color:#b9934b; color:#e1c77f; background:#29271d; box-shadow:inset 0 0 0 1px rgba(185,147,75,.18); }
+  .overlay .actions { max-width:300px; }
+  .overlay .actions .btn.ghost { margin-top:8px; }
+  .roll-die { filter:sepia(.28); }
+  .fx-icon { color:#d9b45e; font-family:Georgia,serif; }
+  .fx-tip { border:1px solid rgba(255,255,255,.16); border-radius:4px; }
+  @media (max-height:720px) { .wrap{padding-top:6px}.players{margin-bottom:3px}.pcard{padding:4px}.pcard .pe{font-size:18px}.legend{margin-top:6px}.foot{display:none}.controls{margin-top:8px}.overlay{justify-content:flex-start;overflow:auto;padding-top:28px}.relic-seal{width:46px;height:46px}.overlay .sub{margin-bottom:8px}.sec-label{margin-top:8px} }
+  @media (prefers-reduced-motion:reduce) { *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="row-1">
+      <div class="title-block">
+  <h1><span class="title-mark">◆</span> 失落遗迹</h1>
+        <p class="subtitle">LOST RELIC · 骰子探险</p>
+      </div>
+    </div>
+    <div class="players" id="players"></div>
+    <div class="banner" id="banner"></div>
+  </header>
+
+  <div class="board-wrap">
+    <canvas id="board" class="board"></canvas>
+    <canvas id="tokens" class="tokens"></canvas>
+    <div class="roll-overlay" id="rollOverlay">
+      <div class="roll-die" id="rollDie">
+        <div class="die-cube" id="dieCube">
+          <div class="die-face f-front"  data-n="1"></div>
+          <div class="die-face f-right"  data-n="2"></div>
+          <div class="die-face f-top"     data-n="3"></div>
+          <div class="die-face f-bottom"  data-n="4"></div>
+          <div class="die-face f-left"    data-n="5"></div>
+          <div class="die-face f-back"    data-n="6"></div>
+        </div>
+      </div>
+      <div class="roll-tip" id="rollTip">摇骰子…</div>
+    </div>
+    <div class="fx-overlay" id="fxOverlay">
+      <div class="fx-icon" id="fxIcon">🚀</div>
+      <div class="fx-tip" id="fxTip"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="side-btns">
+      <button class="btn ghost" id="changeBtn" aria-label="选择遗迹">地图</button>
+      <button class="btn ghost" id="againBtn2" aria-label="重新开始">重置</button>
+    </div>
+    <div class="roll-group">
+      <div class="die" id="die">🎲</div>
+      <button class="btn primary" id="rollBtn"><span class="btn-kicker">探索行动</span>投掷符文骰</button>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span>✦ 传送符文</span><span>◉ 地穴机关</span>
+    <span>▥ 封印石</span><span>♛ 黄金祭坛</span>
+  </div>
+  <p class="foot">穿越 60 块远古石板，最先抵达黄金祭坛的探险者将赢得遗物</p>
+</div>
+
+<!-- 开始 -->
+<div class="overlay show" id="startOverlay">
+  <div class="relic-seal">◆</div>
+  <p class="eyebrow">THE LOST RELIC</p>
+  <h2>失落遗迹</h2>
+  <p class="sub">古老祭坛再度苏醒。集结探险者，<br>穿越机关与符文，夺取沉睡的黄金遗物。</p>
+  <div class="sec-label">集结探险者</div>
+  <div class="chips" id="playerChips">
+    <div class="chip" data-n="1">1 人</div>
+    <div class="chip sel" data-n="2">2 人</div>
+    <div class="chip" data-n="3">3 人</div>
+    <div class="chip" data-n="4">4 人</div>
+  </div>
+  <div class="sec-label">选择远征遗迹</div>
+  <div class="chips" id="mapChips"></div>
+  <div class="actions">
+    <button class="btn primary" id="startBtn"><span class="btn-kicker">远征准备完成</span>进入遗迹</button>
+  </div>
+</div>
+
+<!-- 结束 -->
+<div class="overlay" id="overOverlay">
+  <div class="relic-seal">♛</div>
+  <p class="eyebrow">RELIC CLAIMED</p>
+  <h2>祭坛已开启</h2>
+  <div class="big" id="winner">🎉</div>
+  <p class="sub" id="winSub">本局成绩</p>
+  <div class="actions">
+    <button class="btn primary" id="againBtn">再来一局</button>
+    <button class="btn ghost" id="toMapBtn">换地图</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- 常量 ---------- */
+  var COLS = 6, ROWS = 10, TOTAL = COLS * ROWS; // 60 格，6 列让单格更大
+  var PLAYER_META = [
+    { emoji: '🦊', name: '狐狸', color: '#ff5a3c', animal: 'fox' },
+    { emoji: '🐸', name: '青蛙', color: '#27c93f', animal: 'frog' },
+    { emoji: '🐼', name: '熊猫', color: '#2b2b3a', animal: 'panda' },
+    { emoji: '🐷', name: '小猪', color: '#ff8ad1', animal: 'pig' }
+  ];
+
+  /* ---------- 随机 / 地图生成 ---------- */
+  function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; var t=Math.imul(a^a>>>15,1|a);
+    t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+
+  var MAX_JUMP = 15;   // 火箭前进 / 陷阱掉回 距离上限，不超过 15 格
+  function genMap(seed){
+    var rnd = mulberry32((seed*2654435761) >>> 0);
+    var tiles = []; for (var i=0;i<=TOTAL;i++) tiles.push({type:'normal'});
+    var used = {}; used[1]=true; used[TOTAL]=true;
+    function free(i){ return i>=2 && i<=TOTAL-1 && !used[i]; }
+    function mark(i){ used[i]=true; }
+    // 在 [lo,hi] 内挑一个尚未占用的格；找不到返回 0
+    function pick(lo,hi){ for(var t=0;t<60;t++){ var i=lo+Math.floor(rnd()*(hi-lo+1)); if(free(i)) return i; } return 0; }
+    // 放置带目标格的特殊（火箭/陷阱）：源格与目标格同时占用，杜绝多重特殊与链式触发
+    function placeLink(i,type,to){ if(!free(i) || !free(to)) return false; mark(i); mark(to); tiles[i]={type:type,to:to}; return true; }
+    // 放置带数值的特殊（停一轮）
+    function placeAmt(i,type,amount){ if(!free(i)) return false; mark(i); tiles[i]={type:type,amount:amount}; return true; }
+
+    // 打散：所有“触发源格”（含起点/终点）之间至少隔 MIN_GAP 格，避免特殊位置过于集中
+    var MIN_GAP = 4;
+    var srcs = [1, TOTAL];   // 已固定的触发源格（起点/终点不可移动）
+    function farEnough(i){ for (var q=0;q<srcs.length;q++){ if(Math.abs(srcs[q]-i)<MIN_GAP) return false; } return true; }
+
+    // 停一轮（先放，固定 2 个，不被火箭/陷阱挤掉）
+    var placedSkip=0;
+    for (var e=0;e<80 && placedSkip<2;e++){ var i3=pick(2,TOTAL-1); if(i3 && farEnough(i3) && placeAmt(i3,'skip')){ srcs.push(i3); placedSkip++; } }
+    // 火箭：低 -> 高，直接飞到指定目标格，前进 2~15 格，共 3~4 个
+    var nR = 3 + Math.floor(rnd()*2), placedR=0;
+    for (var a=0;a<80 && placedR<nR;a++){ var s=pick(2, TOTAL-1-MAX_JUMP); if(!s || !farEnough(s)) continue;
+      var t=pick(s+2, Math.min(TOTAL-1, s+MAX_JUMP)); if(t && t>s && placeLink(s,'rocket',t)){ srcs.push(s); placedR++; } }
+    // 陷阱：高 -> 低，掉到指定目标格，回退 2~15 格（同时承担原“回退格”的回退功能），共 3~4 个
+    var nT = 3 + Math.floor(rnd()*2), placedT=0;
+    for (var b=0;b<80 && placedT<nT;b++){ var s2=pick(2+MAX_JUMP, TOTAL-1); if(!s2 || !farEnough(s2)) continue;
+      var t2=pick(Math.max(2, s2-MAX_JUMP), s2-2); if(t2 && t2<s2 && placeLink(s2,'trap',t2)){ srcs.push(s2); placedT++; } }
+
+    tiles[1] = {type:'start'}; tiles[TOTAL] = {type:'finish'};
+    return { id: seed, tiles: tiles };
+  }
+
+  var MAPS = []; for (var m=1;m<=10;m++) MAPS.push(genMap(m));
+
+  /* ---------- 音频 ---------- */
+  var audioCtx=null, masterGain=null, muted=false;
+  function initAudio(){ if(audioCtx) return; try{ audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    masterGain=audioCtx.createGain(); masterGain.gain.value=0.5; masterGain.connect(audioCtx.destination);}catch(e){} }
+  function resumeAudio(){ if(audioCtx && audioCtx.state==='suspended') audioCtx.resume(); }
+  function tone(freq,dur,type,vol,when){ if(!audioCtx||muted) return; type=type||'square'; vol=vol==null?0.2:vol; when=when||0;
+    var t=audioCtx.currentTime+when, o=audioCtx.createOscillator(), g=audioCtx.createGain();
+    o.type=type; o.frequency.value=freq; g.gain.setValueAtTime(0,t);
+    g.gain.linearRampToValueAtTime(vol,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    o.connect(g).connect(masterGain); o.start(t); o.stop(t+dur+0.02); }
+  var sfxStep=function(){ tone(300,0.05,'square',0.08); };
+  var sfxSpecial=function(){ tone(520,0.1,'triangle',0.16); tone(680,0.12,'triangle',0.14,0.06); };
+  var sfxWin=function(){ [523,659,784,1047].forEach(function(f,i){ tone(f,0.16,'triangle',0.2,i*0.1); }); };
+
+  /* ---------- 状态 ---------- */
+  var boardEl=document.getElementById('board');
+  var tokensEl=document.getElementById('tokens');
+  var playersEl=document.getElementById('players');
+  var bannerEl=document.getElementById('banner');
+  var dieEl=document.getElementById('die');
+  var rollBtn=document.getElementById('rollBtn');
+
+  var players=[], current=0, map=null, rolling=false, finished=false, turnCount=0;
+  var landedBox=null;   // 最近一次到达方框：{idx,color}，sticky 在该格保留到下一回合 takeTurn 开头清
+  var selPlayers=2, selMap='random';
+
+  function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+
+  /* ---------- 像素风棋盘渲染 ---------- */
+  var CELL = 40;
+  var CW = COLS * CELL, CH = ROWS * CELL;
+  var bctx = boardEl.getContext('2d');
+  var tctx = tokensEl.getContext('2d');   // 角色层：按真实分辨率渲染，不像素化
+  var off = document.createElement('canvas'), octx = off.getContext('2d');
+  off.width = CW; off.height = CH;
+  var TS = 1;   // 角色层相对棋盘的内部缩放比（buildBoard 中按显示尺寸/dpr 计算）
+
+  function shade(hex, amt){
+    hex=(hex||'#000').replace('#','');
+    if(hex.length===3) hex=hex.split('').map(function(c){return c+c;}).join('');
+    var r=parseInt(hex.substr(0,2),16),g=parseInt(hex.substr(2,2),16),b=parseInt(hex.substr(4,2),16);
+    var t=amt<0?0:255,p=Math.abs(amt)/100;
+    function f(c){return Math.max(0,Math.min(255,Math.round(c+(t-c)*p)));}
+    return '#'+[f(r),f(g),f(b)].map(function(c){return ('0'+c.toString(16)).slice(-2);}).join('');
+  }
+  function R(ctx,x,y,w,h,c){ if(c) ctx.fillStyle=c; ctx.fillRect(x|0,y|0,w|0,h|0); }
+
+  var RUINS = [
+    {name:'灰烬神殿',stone:'#625747',floor:'#171815',rune:'#d07945'},
+    {name:'翡翠地宫',stone:'#455e50',floor:'#101916',rune:'#66b39e'},
+    {name:'沉沙王陵',stone:'#766347',floor:'#191611',rune:'#d6ae58'},
+    {name:'月蚀祭坛',stone:'#525364',floor:'#121217',rune:'#8d8fc2'},
+    {name:'赤铜要塞',stone:'#6b4a3d',floor:'#191311',rune:'#c66d52'},
+    {name:'寒霜墓穴',stone:'#50616a',floor:'#101619',rune:'#79b1c0'},
+    {name:'黑曜深渊',stone:'#49454e',floor:'#0f0e11',rune:'#a17eb0'},
+    {name:'苔痕圣所',stone:'#536044',floor:'#12170f',rune:'#8eac61'},
+    {name:'日轮遗宫',stone:'#77603e',floor:'#19150e',rune:'#d1a640'},
+    {name:'星陨密室',stone:'#414f61',floor:'#0e131a',rune:'#6496bd'}
+  ];
+  var BASE={ normal:'#625747', start:'#527c6e', finish:'#b78c39' };
+  function theme(){ return RUINS[((map&&map.id)||1)-1]; }
+
+  function cellRC(idx){ idx--; var r=Math.floor(idx/COLS), c=idx%COLS; if(r%2===1) c=COLS-1-c; return {r:r,c:c}; }
+  function tileCenter(idx){ var rc=cellRC(idx); return { x:rc.c*CELL+CELL/2, y:rc.r*CELL+CELL/2 }; }
+
+  function drawTileBase(ctx,ox,oy,type){
+    // 火箭/陷阱(井盖)/停一轮(铁栅栏) 三种特殊格不铺特殊底色，统一用普通草地色
+    var neutral = (type==='rocket'||type==='trap'||type==='skip');
+    var th=theme(), base=(neutral||type==='normal')?th.stone:(BASE[type]||th.stone), dark=shade(base,-25), light=shade(base,12);
+    R(ctx,ox,oy,CELL,CELL,base);
+    R(ctx,ox,oy,CELL,2,light); R(ctx,ox,oy,2,CELL,light);
+    R(ctx,ox,oy+CELL-2,CELL,2,dark); R(ctx,ox+CELL-2,oy,2,CELL,dark);
+    R(ctx,ox+3,oy+3,CELL-6,1,shade(base,-28)); R(ctx,ox+3,oy+CELL-4,CELL-6,1,shade(base,-28));
+    ctx.strokeStyle=shade(base,-30); ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(ox+6,oy+12);ctx.lineTo(ox+13,oy+15);ctx.lineTo(ox+18,oy+12);ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(ox+28,oy+25);ctx.lineTo(ox+34,oy+22);ctx.stroke();
+    ctx.fillStyle=shade(base,-18);
+    [[7,29],[26,8],[18,31]].forEach(function(p){ ctx.fillRect(ox+p[0],oy+p[1],2,2); });
+  }
+
+  // 拐弯格：把转角磨成外凸圆角（border-radius 风格，非内切凹弧）
+  // 圆心在格子内（距两边 R），磨掉"圆弧外侧到角点"的三角区并填背景色，圆弧凸向格子外
+  // corner: 'tr' 右上 / 'br' 右下 / 'tl' 左上 / 'bl' 左下
+  function roundCorner(ctx,ox,oy,corner){
+    var R=Math.round(CELL*0.4), bg=theme().floor, C, a0, a1, ccw, ax, ay;
+    if(corner==='tr'){ C={x:ox+CELL-R,y:oy+R};         a0=0;           a1=-Math.PI/2; ccw=true;  ax=ox+CELL; ay=oy; }
+    else if(corner==='br'){ C={x:ox+CELL-R,y:oy+CELL-R}; a0=0;         a1=Math.PI/2;  ccw=false; ax=ox+CELL; ay=oy+CELL; }
+    else if(corner==='tl'){ C={x:ox+R,y:oy+R};         a0=Math.PI;     a1=Math.PI*1.5; ccw=false; ax=ox;      ay=oy; }
+    else { C={x:ox+R,y:oy+CELL-R};                     a0=Math.PI/2;   a1=Math.PI;    ccw=false; ax=ox;      ay=oy+CELL; }
+    var sx=C.x+Math.cos(a0)*R, sy=C.y+Math.sin(a0)*R;   // 边上的圆弧起点
+    ctx.save(); ctx.fillStyle=bg;
+    ctx.beginPath();
+    ctx.moveTo(sx,sy);
+    ctx.arc(C.x,C.y,R,a0,a1,ccw);                        // 凸向格子外的圆弧
+    ctx.lineTo(ax,ay);                                   // 回到角点
+    ctx.closePath(); ctx.fill();                         // 磨掉角外三角，露背景
+    ctx.restore();
+  }
+
+  // 返回某格需圆化的角（顺着拐弯方向的外侧角）：'tr'/'br'/'tl'/'bl' / null
+  function turnCorner(idx){
+    var r=Math.floor((idx-1)/COLS), rc=cellRC(idx), c=rc.c;
+    if(r>=ROWS-1) return null;                                   // 最后一行无下游，不圆角
+    var isEnd   = (r%2===0) ? (c===COLS-1) : (c===0);            // 行末：偶行右上 / 奇行左下
+    var isStart = (r%2===0) ? (c===0)      : (c===COLS-1);       // 行首：偶行左上 / 奇行右下
+    if(isEnd)   return (r%2===0) ? 'tr' : 'tl';                  // 末格：偶行右上 / 奇行左上（6右上、12左上）
+    if(isStart && r>0) return (r%2===0) ? 'bl' : 'br';           // 下游首格：偶行左下 / 奇行右下（13左下、7右下）
+    return null;
+  }
+
+  function drawElement(ctx,ox,oy,t){
+    if(t.type==='rocket') drawBoost(ctx,ox,oy);
+    else if(t.type==='trap') drawTrap(ctx,ox,oy);
+    else if(t.type==='skip') drawSkip(ctx,ox,oy);
+    else if(t.type==='start') drawStart(ctx,ox,oy);
+    else if(t.type==='finish') drawFinish(ctx,ox,oy);
+    if(t.type==='rocket'&&typeof t.to==='number') drawBadge(ctx,ox,oy,String(t.to),'#2f7d3f');
+    else if(t.type==='trap'&&typeof t.to==='number') drawBadge(ctx,ox,oy,String(t.to),'#9e2340');
+  }
+
+  function drawTrap(ctx,ox,oy){
+    // 地穴机关：暗红机关环与深渊中心
+    var cx=ox+CELL/2, cy=oy+CELL/2, r=13;
+    ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.fillStyle='#8a5648'; ctx.fill();
+    ctx.beginPath(); ctx.arc(cx,cy,r-2,0,Math.PI*2);
+    ctx.fillStyle='#211816'; ctx.fill();
+    // 放射纹路（短灰线）
+    ctx.strokeStyle='#bd735d'; ctx.lineWidth=1;
+    for(var k=0;k<8;k++){ var a=k*Math.PI/4;
+      ctx.beginPath(); ctx.moveTo(cx+Math.cos(a)*(r-7), cy+Math.sin(a)*(r-7));
+      ctx.lineTo(cx+Math.cos(a)*(r-3), cy+Math.sin(a)*(r-3)); ctx.stroke(); }
+    // 中心提手孔
+    ctx.beginPath(); ctx.arc(cx,cy,4,0,Math.PI*2); ctx.fillStyle='#080807'; ctx.fill();
+    ctx.restore();
+  }
+  function drawBoost(ctx,ox,oy){
+    var cx=ox+CELL/2,cy=oy+CELL/2, c=theme().rune;
+    ctx.save(); ctx.strokeStyle=c; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.arc(cx,cy,12,0,Math.PI*2);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx,cy-10);ctx.lineTo(cx+9,cy+7);ctx.lineTo(cx-9,cy+7);ctx.closePath();ctx.stroke();
+    ctx.beginPath();ctx.arc(cx,cy,3,0,Math.PI*2);ctx.fillStyle=shade(c,18);ctx.fill();ctx.restore();
+  }
+  function drawSkip(ctx,ox,oy){
+    // 封印石：紫灰石栅与中央锁印
+    var cx=ox+CELL/2, cy=oy+CELL/2, post='#6c6479', bar='#8a8098', dark='#403a48';
+    var top=cy-13, bot=cy+13, left=cx-13, right=cx+13, n=6, sw=2;
+    var gap=(right-left-(n*sw))/(n-1);   // 竖条间距
+    // 上下横档
+    R(ctx,left-1,top-1,right-left+2,4,bar); R(ctx,left-1,top-1,right-left+2,1,dark);
+    R(ctx,left-1,bot-3,right-left+2,4,bar); R(ctx,left-1,bot-3,right-left+2,1,dark);
+    // 6 根竖条
+    for(var k=0;k<n;k++){ var x=Math.round(left+k*(sw+gap));
+      R(ctx,x,top,sw,bot-top,post); R(ctx,x,top,1,bot-top,dark); }
+    ctx.fillStyle='#b59fc8';ctx.font='bold 12px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('×',cx,cy);
+  }
+  function drawStart(ctx,ox,oy){
+    var cx=ox+CELL/2;
+    ctx.fillStyle='#d7c89f';ctx.font='bold 22px Georgia';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('◇',cx,oy+CELL/2);
+  }
+  function drawFinish(ctx,ox,oy){
+    var cx=ox+CELL/2, by=oy+CELL-8, g='#e0b64d';
+    R(ctx,cx-12,by-4,24,6,g); R(ctx,cx-12,by-4,24,2,'#ffe39a');
+    R(ctx,cx-12,by-10,5,7,g); R(ctx,cx-4,by-13,8,10,g); R(ctx,cx+7,by-10,5,7,g);
+    R(ctx,cx-10,by-3,2,2,'#69aaa0'); R(ctx,cx-1,by-2,2,2,'#69aaa0'); R(ctx,cx+8,by-3,2,2,'#69aaa0');
+  }
+
+  // 角色棋子：灰底实心圆 + 4px 玩家专属色圆环 + 居中清晰 emoji（按 TS 缩放渲染，不模糊）
+  function drawPlayerToken(ctx,x,y,n,color,emoji){
+    var s=Math.round(CELL*0.34*TS*(n>1?0.84:1)*(n>3?0.9:1));
+    var r=Math.floor(s/2);
+    ctx.save();
+    // 灰色实心圆底
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2);
+    ctx.fillStyle='#e9edf2'; ctx.fill();
+    // 1px 玩家专属色圆环（外圈描边）
+    ctx.lineWidth=Math.max(1, Math.round(1*TS));
+    ctx.strokeStyle=color; ctx.stroke();
+    // 内圈细白描边，让灰底与圆环边界更利落
+    ctx.beginPath(); ctx.arc(x, y, r-Math.max(1,Math.round(1*TS)), 0, Math.PI*2);
+    ctx.lineWidth=1; ctx.strokeStyle='rgba(255,255,255,.8)'; ctx.stroke();
+    // emoji 居中绘制，不做裁剪、不模糊
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.font=Math.round(s*0.74)+'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+    ctx.fillText(emoji, x, y+1);
+    ctx.restore();
+  }
+
+  function drawNum(ctx,ox,oy,i){
+    ctx.font='bold 9px sans-serif'; ctx.textBaseline='top';
+    ctx.fillStyle='rgba(0,0,0,.5)'; ctx.fillText(String(i),ox+4,oy+3);
+    ctx.fillStyle='rgba(255,255,255,.9)'; ctx.fillText(String(i),ox+3,oy+2);
+  }
+
+  // 目标格标注：底部彩色药丸 + 数字（火箭=前进到的格，陷阱=掉落到的格）
+  function drawBadge(ctx,ox,oy,text,bg){
+    ctx.font='bold 10px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    var w=Math.ceil(ctx.measureText(text).width)+8, h=12;
+    var bx=Math.round(ox+CELL/2-w/2), by=Math.round(oy+CELL-h-2);
+    R(ctx,bx,by,w,h,bg); R(ctx,bx,by,w,1,shade(bg,-28)); R(ctx,bx,by+h-1,w,1,shade(bg,-28));
+    ctx.fillStyle='#ffffff'; ctx.fillText(text, ox+CELL/2, by+h/2);
+  }
+
+  function drawStatic(){
+    octx.clearRect(0,0,CW,CH);
+    var th=theme(); R(octx,0,0,CW,CH,th.floor);
+    octx.fillStyle='rgba(255,255,255,.025)';
+    for(var d=0;d<55;d++){ var dx=(d*47+map.id*13)%CW,dy=(d*83+map.id*7)%CH;octx.fillRect(dx,dy,1,1); }
+    for(var i=1;i<=TOTAL;i++){ var rc=cellRC(i), ox=rc.c*CELL, oy=rc.r*CELL, t=map.tiles[i];
+      drawTileBase(octx,ox,oy,t.type);
+      var tc=turnCorner(i); if(tc) roundCorner(octx,ox,oy,tc);   // 拐弯格挖圆角（在底色之上、元素之下）
+      drawElement(octx,ox,oy,t); drawNum(octx,ox,oy,i); }
+  }
+
+  function buildBoard(){ bctx.imageSmoothingEnabled=false; octx.imageSmoothingEnabled=false;
+    boardEl.width=CW; boardEl.height=CH;
+    // 角色层按真实显示分辨率渲染（含 dpr），避免被 CSS 放大导致 emoji 模糊
+    var dpr=Math.max(1, Math.min(3, window.devicePixelRatio||1));
+    var cssW=boardEl.clientWidth||480;
+    TS = (cssW*dpr)/CW;                       // 角色层相对棋盘的内部缩放比
+    tokensEl.width=Math.round(CW*TS); tokensEl.height=Math.round(CH*TS);
+    tctx.imageSmoothingEnabled=true;
+    drawStatic(); renderBoard(); }
+
+  function renderBoard(){
+    bctx.drawImage(off,0,0);
+    tctx.clearRect(0,0,CW*TS,CH*TS);
+    var cur = (!finished && players[current]) ? players[current] : null;
+    var byPos={};
+    players.forEach(function(p){ (byPos[p.pos]=byPos[p.pos]||[]).push(p); });
+    Object.keys(byPos).forEach(function(pos){
+      var rc=cellRC(+pos), ox=rc.c*CELL, oy=rc.r*CELL, cx=ox+CELL/2, cy=oy+CELL/2;
+      var group=byPos[pos], n=group.length, sp=CELL*0.18, sp2=CELL*0.16;
+      var pts = n===1?[[0,0]] : n===2?[[-sp,0],[sp,0]] : n===3?[[-sp,-sp2],[sp,-sp2],[0,sp2]] : [[-sp,-sp2],[sp,-sp2],[-sp,sp2],[sp,sp2]];
+      // 轮到投骰的玩家：先画一层光晕再画棋子，醒目标记
+      group.forEach(function(p,i){
+        var tx=(cx+pts[i][0])*TS, ty=(cy+pts[i][1])*TS;
+        if(cur && p===cur){
+          tctx.save();
+          tctx.beginPath(); tctx.arc(tx,ty,CELL*0.42*TS,0,Math.PI*2);
+          tctx.fillStyle=p.color; tctx.globalAlpha=.22; tctx.fill();
+          tctx.globalAlpha=.45; tctx.lineWidth=Math.max(1.5,2*TS); tctx.strokeStyle=p.color; tctx.stroke();
+          tctx.restore();
+        }
+        drawPlayerToken(tctx, tx, ty, n, p.color, p.emoji);
+      });
+    });
+    // "到达位置"方框（sticky）：保留在最近一次落地的格，玩家色描边
+    if(landedBox && landedBox.idx>=1 && landedBox.idx<=TOTAL){
+      var rc=cellRC(landedBox.idx), ox=rc.c*CELL, oy=rc.r*CELL;
+      bctx.strokeStyle=landedBox.color; bctx.lineWidth=3; bctx.strokeRect(ox+1.5,oy+1.5,CELL-3,CELL-3);
+      bctx.strokeStyle='rgba(255,255,255,.75)'; bctx.lineWidth=1; bctx.strokeRect(ox+2.5,oy+2.5,CELL-5,CELL-5);
+    }
+  }
+
+  function renderPlayers(){
+    playersEl.innerHTML='';
+    players.forEach(function(p,idx){
+      var d=document.createElement('div'); d.className='pcard'+(idx===current && !finished?' active':'');
+      d.innerHTML='<div class="pe">'+p.emoji+'</div><div class="pname">'+p.name+(idx===current&&!finished?' · 行动中':'')+'</div><div class="ppos">'+(p.skip>0?('封印 '+p.skip):p.pos)+'</div>';
+      playersEl.appendChild(d);
+    });
+  }
+
+  function banner(text){ bannerEl.textContent=text; bannerEl.classList.add('show');
+    clearTimeout(banner._t); banner._t=setTimeout(function(){ bannerEl.classList.remove('show'); }, 1800); }
+
+  /* ---------- 游戏流程 ---------- */
+  function newGame(numPlayers, mapId){
+    initAudio(); resumeAudio();
+    initDieCube();
+    var mid = (mapId==='random') ? (1+Math.floor(Math.random()*10)) : mapId;
+    map = MAPS[mid-1];
+    document.querySelector('.subtitle').textContent='LOST RELIC · '+RUINS[mid-1].name;
+    buildBoard();
+    players=[]; for (var i=0;i<numPlayers;i++){ var meta=PLAYER_META[i];
+      players.push({ emoji:meta.emoji, name:meta.name, color:meta.color, animal:meta.animal, pos:1, skip:0 }); }
+    current=0; rolling=false; finished=false; turnCount=0;
+    renderPlayers(); renderBoard(); banner('远征开始 · '+RUINS[mid-1].name);
+    dieEl.textContent='🎲'; hideOverlays();
+  }
+
+  var rollOverlay=document.getElementById('rollOverlay');
+  var rollDieEl=document.getElementById('rollDie');
+  var rollTipEl=document.getElementById('rollTip');
+  var fxOverlay=document.getElementById('fxOverlay');
+  var fxIconEl=document.getElementById('fxIcon');
+  var fxTipEl=document.getElementById('fxTip');
+  // 渲染单个骰子面（3x3 网格，按点数点亮圆点）；face 为 .die-face 元素
+  function renderDieFace(face, n){
+    var map={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
+    face.innerHTML='';
+    for(var k=0;k<9;k++){
+      var d=document.createElement('i');
+      if(map[n].indexOf(k)>=0) d.className='on'; else d.className='off';
+      face.appendChild(d);
+    }
+  }
+
+  // 初始化立体骰子的 6 个面
+  function initDieCube(){
+    var faces=document.querySelectorAll('.die-face');
+    for(var i=0;i<faces.length;i++){ var f=faces[i];
+      if(!f.dataset.ready){ renderDieFace(f, f.getAttribute('data-n')); f.dataset.ready='1'; } }
+  }
+
+  // 点数 -> 立方体旋转角度（让对应面朝前）
+  function dieAngle(n){
+    var t={1:[0,0], 2:[0,-90], 3:[-90,0], 4:[90,0], 5:[0,90], 6:[0,180]}[n];
+    return 'rotateX('+t[0]+'deg) rotateY('+t[1]+'deg)';
+  }
+
+  // 特殊事件大动画：中央大图标 + 文案药丸，弹入后停留再淡出
+  async function playFx(icon, text, bg){
+    fxIconEl.textContent=icon;
+    fxTipEl.textContent=text;
+    fxTipEl.style.background=bg||'rgba(78,205,196,.9)';
+    fxOverlay.classList.add('show');
+    await wait(1600);
+    fxOverlay.classList.remove('show');
+    await wait(200);
+  }
+
+  async function rollDie(who){
+    var final=1+Math.floor(Math.random()*6);
+    var cube=document.getElementById('dieCube');
+    rollTipEl.textContent=(who?who+' ':'')+'摇骰子…';
+    rollOverlay.classList.add('show');
+    rollDieEl.classList.remove('settle'); rollDieEl.classList.add('rolling');
+    return new Promise(function(res){ var n=0;
+      var iv=setInterval(function(){
+        // 滚动中：立方体快速自转（随机角度，营造立体旋转感）
+        cube.style.transition='none';
+        cube.style.transform='rotateX('+(Math.random()*360-180)+'deg) rotateY('+(Math.random()*360-180)+'deg)';
+        sfxStep();
+        if(++n>=12){
+          clearInterval(iv);
+          rollDieEl.classList.remove('rolling'); rollDieEl.classList.add('settle');
+          // 停止：平滑旋转到目标点数面朝前
+          cube.style.transition='transform .55s cubic-bezier(.15,1.35,.35,1)';
+          cube.style.transform=dieAngle(final);
+          dieEl.textContent='🎲';
+          setTimeout(function(){ rollOverlay.classList.remove('show'); res(final); }, 1100);
+        }
+      }, 60);
+    });
+  }
+
+  async function moveBy(p, delta){
+    var steps=Math.abs(delta), dir=delta>0?1:-1;
+    for (var s=0;s<steps;s++){
+      if (dir>0){ if(p.pos>=TOTAL) break; p.pos++; } else { if(p.pos<=1) break; p.pos--; }
+      renderBoard(); await wait(230);
+      if (p.pos>=TOTAL) return true;
+    }
+    return p.pos>=TOTAL;
+  }
+
+  async function resolveLanding(p){
+    var t=map.tiles[p.pos];
+    if (t.type==='rocket'){ sfxSpecial(); banner(p.emoji+' 唤醒传送符文，跃迁至 '+t.to+' 格');
+      await playFx('✦', p.emoji+' 符文跃迁 → 第 '+t.to+' 格', 'rgba(55,112,103,.94)');
+      p.pos=t.to; renderBoard(); if(p.pos>=TOTAL) return win(p); }
+    else if (t.type==='trap'){ sfxSpecial(); banner(p.emoji+' 触发地穴机关，坠回 '+t.to+' 格');
+      await playFx('◉', p.emoji+' 地穴坍塌 ↓ 第 '+t.to+' 格', 'rgba(117,56,45,.94)');
+      p.pos=t.to; renderBoard(); }
+    else if (t.type==='skip'){ sfxSpecial(); banner(p.emoji+' 被封印石困住，下回合暂停');
+      p.skip=1; renderPlayers();
+      await playFx('▥', p.emoji+' 遭到封印 · 暂停一轮', 'rgba(82,68,101,.94)'); }
+  }
+
+  async function takeTurn(){
+    if (rolling || finished) return;
+    // 新回合开始：清掉上回合的"到达"方框（sticky 解除）
+    landedBox = null;
+    var p=players[current];
+    if (p.skip>0){ p.skip--; banner(p.emoji+' 仍被封印，本回合暂停'); renderPlayers(); await wait(800); nextTurn(); return; }
+    rolling=true; rollBtn.disabled=true; turnCount++;
+    var d=await rollDie(p.emoji);
+    banner(p.emoji+' 摇出 '+d+' 点'); renderPlayers(); await wait(250);
+    var reached=await moveBy(p, d);
+    if (reached) return win(p);
+    await resolveLanding(p);
+    // 落地后：在走到的格留下"到达"方框（sticky），下一回合 takeTurn 开头清除
+    landedBox = { idx: p.pos, color: p.color };
+    renderBoard();
+    rolling=false; rollBtn.disabled=false;
+    if (!finished) nextTurn();   // 切到下一位 → 圆框（光晕）切到下一位，方框保留在 A 走到的格
+  }
+
+  function win(p){ finished=true; rolling=false; rollBtn.disabled=true; sfxWin();
+    banner(p.emoji+' 开启黄金祭坛，获得遗物！');
+    document.getElementById('winner').textContent=p.emoji+' '+p.name;
+    document.getElementById('winSub').textContent='成为遗物守护者 · 共 '+turnCount+' 回合 · '+players.length+' 位探险者';
+    showOverlay('overOverlay'); }
+
+  function nextTurn(){ current=(current+1)%players.length; renderPlayers(); renderBoard(); }
+
+  /* ---------- 覆盖层 ---------- */
+  function showOverlay(id){ ['startOverlay','overOverlay'].forEach(function(o){ document.getElementById(o).classList.toggle('show', o===id); }); }
+  function hideOverlays(){ ['startOverlay','overOverlay'].forEach(function(o){ document.getElementById(o).classList.remove('show'); }); }
+
+  /* ---------- 输入 ---------- */
+  rollBtn.addEventListener('click', takeTurn);
+  document.getElementById('againBtn2').addEventListener('click', function(){ if(map) newGame(players.length, selMap); });
+  document.getElementById('changeBtn').addEventListener('click', showStart);
+  document.getElementById('againBtn').addEventListener('click', function(){ newGame(players.length, selMap); });
+  document.getElementById('toMapBtn').addEventListener('click', showStart);
+
+  function showStart(){ finished=true; rolling=false; rollBtn.disabled=false; showOverlay('startOverlay'); }
+
+  // 开始界面选择
+  document.getElementById('playerChips').addEventListener('click', function(e){
+    var c=e.target.closest('.chip'); if(!c) return;
+    this.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('sel'); }); c.classList.add('sel');
+    selPlayers=parseInt(c.dataset.n);
+  });
+  document.getElementById('mapChips').addEventListener('click', function(e){
+    var c=e.target.closest('.chip'); if(!c) return;
+    this.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('sel'); }); c.classList.add('sel');
+    selMap=c.dataset.map;
+  });
+  document.getElementById('startBtn').addEventListener('click', function(){ newGame(selPlayers, selMap); });
+
+  document.addEventListener('pointerdown', function once(){ initAudio(); resumeAudio(); document.removeEventListener('pointerdown', once); });
+
+  // 构建地图选择 chips
+  (function(){ var box=document.getElementById('mapChips');
+    var r=document.createElement('div'); r.className='chip'; r.dataset.map='random'; r.textContent='🎲 随机'; r.classList.add('sel'); box.appendChild(r);
+    for (var i=1;i<=10;i++){ var c=document.createElement('div'); c.className='chip'; c.dataset.map=String(i); c.textContent=RUINS[i-1].name; box.appendChild(c); }
+  })();
+
+  map = MAPS[2]; // 开始界面背后的预览棋盘（地图 3）
+  buildBoard();
+  renderPlayers();
+})();
+</script>
+</body>
+</html>

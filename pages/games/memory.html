@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0f1626">
+<title>翻牌记忆 · Memory</title>
+<style>
+  :root {
+    --bg: #0f1626;
+    --bg2: #1a2438;
+    --card-back: linear-gradient(135deg, #3d2c50 0%, #1a2438 100%);
+    --card-front: #1f2a40;
+    --accent: #4ecdc4;
+    --accent2: #ffd166;
+    --danger: #ef476f;
+    --text: #e8eef5;
+    --text-dim: #8a96ad;
+    --gap: 10px;
+    --board-size: min(92vw, 420px);
+    --cell: calc((var(--board-size) - 5 * var(--gap)) / 4);
+    --flip-duration: 420ms;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overscroll-behavior: none; }
+
+  body {
+    background: radial-gradient(ellipse at 50% 0%, #1a2438 0%, var(--bg) 65%);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", "Noto Sans SC", sans-serif;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    display: flex;
+    justify-content: center;
+    min-height: 100%;
+  }
+
+  .wrap {
+    width: min(94vw, 460px);
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: calc(18px + env(safe-area-inset-top)) 0 calc(24px + env(safe-area-inset-bottom));
+  }
+
+  /* ---------- 顶部 ---------- */
+  header { padding: 0 4px 16px; }
+
+  .row-1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-size: 30px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+
+  .subtitle {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 5px;
+  }
+
+  .stats { display: flex; gap: 8px; }
+
+  .stat {
+    background: var(--bg2);
+    border-radius: 8px;
+    padding: 5px 12px 7px;
+    min-width: 64px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat .label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+  }
+
+  .stat .value {
+    font-size: 19px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.3;
+  }
+
+  .stat .value.bump { animation: bump .28s ease; }
+  @keyframes bump { 50% { transform: scale(1.25); } }
+
+  .stat .value.good { color: var(--accent); }
+  .stat .value.warn { color: var(--danger); }
+
+  .row-2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .hint { font-size: 12px; color: var(--text-dim); }
+
+  .btns { display: flex; gap: 8px; }
+
+  .btn {
+    border: none;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #0a1320;
+    font-size: 14px;
+    font-weight: 800;
+    font-family: inherit;
+    padding: 9px 16px;
+    cursor: pointer;
+    transition: transform .08s ease, opacity .15s ease;
+  }
+
+  .btn:active { transform: scale(.93); }
+  .btn.ghost { background: transparent; color: var(--text-dim); border: 1px solid #2c3a55; }
+
+  /* ---------- 棋盘 ---------- */
+  .board-wrap {
+    display: flex;
+    justify-content: center;
+    flex: 1;
+    align-items: flex-start;
+    padding-top: 4px;
+  }
+
+  #board {
+    width: var(--board-size);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--gap);
+    perspective: 800px;
+  }
+
+  .card {
+    aspect-ratio: 1;
+    position: relative;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform var(--flip-duration);
+    will-change: transform;
+  }
+
+  .card.flipped { transform: rotateY(180deg); }
+  .card.matched { transform: rotateY(180deg); }
+
+  .face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(var(--cell) * .5);
+    line-height: 1;
+  }
+
+  .back {
+    background: var(--card-back);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .35);
+    overflow: hidden;
+  }
+
+  /* 背面花纹 */
+  .back::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 2px solid rgba(255, 255, 255, .08);
+    border-radius: 8px;
+  }
+
+  .back::after {
+    content: '?';
+    font-size: calc(var(--cell) * .35);
+    font-weight: 900;
+    color: rgba(255, 255, 255, .14);
+  }
+
+  .front {
+    background: var(--card-front);
+    transform: rotateY(180deg);
+    box-shadow: 0 3px 14px rgba(0, 0, 0, .4);
+  }
+
+  .card.matched .front {
+    background: linear-gradient(135deg, #1a3a36 0%, #15293a 100%);
+    box-shadow: 0 0 16px rgba(78, 205, 196, .35);
+  }
+
+  .card.matched .face { animation: matchPulse .5s ease; }
+  @keyframes matchPulse {
+    50% { transform: rotateY(180deg) scale(1.08); }
+  }
+
+  .card.wrong .front {
+    background: #3a1a26;
+    box-shadow: 0 0 14px rgba(239, 71, 111, .35);
+  }
+
+  .card.wrong .face { animation: wrongShake .4s ease; }
+  @keyframes wrongShake {
+    0%, 100% { transform: rotateY(180deg) translateX(0); }
+    25% { transform: rotateY(180deg) translateX(-5px); }
+    75% { transform: rotateY(180deg) translateX(5px); }
+  }
+
+  /* hover（桌面） */
+  @media (hover: hover) and (pointer: fine) {
+    .card:not(.flipped):not(.matched):hover .back {
+      box-shadow: 0 4px 14px rgba(78, 205, 196, .3), 0 3px 10px rgba(0, 0, 0, .35);
+    }
+    .card:not(.flipped):not(.matched):hover { transform: translateY(-2px); }
+  }
+
+  /* ---------- 覆盖层 ---------- */
+  #overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 16, 28, .82);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .35s ease;
+    z-index: 100;
+  }
+
+  #overlay.show { opacity: 1; pointer-events: auto; }
+
+  #overlayTitle {
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  #overlayStars {
+    font-size: 34px;
+    letter-spacing: 6px;
+    margin: 6px 0 4px;
+  }
+
+  .overlay-detail {
+    font-size: 14px;
+    color: var(--text-dim);
+    text-align: center;
+    line-height: 1.8;
+  }
+
+  .overlay-detail b { color: var(--text); font-weight: 800; }
+
+  .overlay-btns {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .overlay-btns .btn { padding: 12px 22px; font-size: 15px; }
+  .overlay-btns .btn.ghost { color: var(--text-dim); }
+
+  .foot {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-dim);
+    padding: 14px 8px 0;
+  }
+
+  /* 桌面宽屏 */
+  @media (min-width: 500px) {
+    :root { --board-size: 420px; }
+  }
+
+  /* 矮屏 */
+  @media (max-height: 660px) {
+    :root { --board-size: min(82vw, 340px); }
+    h1 { font-size: 26px; }
+    header { padding-bottom: 12px; }
+    .foot { padding-top: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="row-1">
+      <div>
+        <h1>翻牌记忆</h1>
+        <p class="subtitle">找出 8 对相同图案</p>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <span class="label">步数</span>
+          <span class="value" id="moves">0</span>
+        </div>
+        <div class="stat">
+          <span class="label">时间</span>
+          <span class="value" id="time">0:00</span>
+        </div>
+      </div>
+    </div>
+    <div class="row-2">
+      <p class="hint">点开两张相同的牌即可消除</p>
+      <div class="btns">
+        <button id="restartBtn" class="btn ghost">重新开始</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="board-wrap">
+    <div id="board"></div>
+  </div>
+
+  <p class="foot">步数越少星级越高 · <b id="bestHint">—</b></p>
+</div>
+
+<div id="overlay">
+  <h2 id="overlayTitle">完成！</h2>
+  <div id="overlayStars">★★★</div>
+  <div class="overlay-detail" id="overlayDetail"></div>
+  <div class="overlay-btns">
+    <button id="overlayRestart" class="btn">再来一局</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var ROWS = 4, COLS = 4;
+  var TOTAL_PAIRS = (ROWS * COLS) / 2;
+  var EMOJIS = ['🐶', '🐱', '🦊', '🐼', '🦁', '🐸', '🐙', '🦄'];
+  var MAX_HISTORY = 10;
+
+  var state = {
+    deck: [],
+    firstCard: null,
+    lock: false,
+    moves: 0,
+    matched: 0,
+    startTime: 0,
+    timerId: null,
+    finished: false,
+  };
+
+  var board = document.getElementById('board');
+  var movesEl = document.getElementById('moves');
+  var timeEl = document.getElementById('time');
+  var restartBtn = document.getElementById('restartBtn');
+  var overlay = document.getElementById('overlay');
+  var overlayTitle = document.getElementById('overlayTitle');
+  var overlayStars = document.getElementById('overlayStars');
+  var overlayDetail = document.getElementById('overlayDetail');
+  var overlayRestart = document.getElementById('overlayRestart');
+  var bestHint = document.getElementById('bestHint');
+
+  /* ---------- 存储 ---------- */
+
+  function storageGet(key) {
+    try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; }
+  }
+  function storageSet(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+  }
+
+  function loadHistory() {
+    return storageGet('memory-flip-history') || [];
+  }
+  function saveRecord(record) {
+    var h = loadHistory();
+    h.push(record);
+    h.sort(function (a, b) {
+      if (a.moves !== b.moves) return a.moves - b.moves;
+      return a.time - b.time;
+    });
+    storageSet('memory-flip-history', h.slice(0, MAX_HISTORY));
+  }
+  function getBest() {
+    var h = loadHistory();
+    return h.length ? h[0] : null;
+  }
+
+  function formatTime(sec) {
+    var m = Math.floor(sec / 60);
+    var s = sec % 60;
+    return m + ':' + (s < 10 ? '0' + s : s);
+  }
+
+  function fmtBest(b) {
+    if (!b) return '尚无记录';
+    return '最佳 ' + b.moves + ' 步 / ' + formatTime(b.time);
+  }
+
+  /* ---------- 棋盘 ---------- */
+
+  function shuffle(arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    return arr;
+  }
+
+  function buildDeck() {
+    var deck = [];
+    for (var i = 0; i < TOTAL_PAIRS; i++) {
+      deck.push({ id: i, emoji: EMOJIS[i] });
+      deck.push({ id: i, emoji: EMOJIS[i] });
+    }
+    return shuffle(deck);
+  }
+
+  function createCard(item, index) {
+    var x = index % COLS;
+    var y = Math.floor(index / COLS);
+    var el = document.createElement('div');
+    el.className = 'card';
+    el.dataset.x = x;
+    el.dataset.y = y;
+    el.innerHTML =
+      '<div class="face back"></div>' +
+      '<div class="face front"></div>';
+    el.querySelector('.front').textContent = item.emoji;
+    el.addEventListener('click', function () { onCardClick(el, item); });
+    return el;
+  }
+
+  function render() {
+    board.innerHTML = '';
+    var frag = document.createDocumentFragment();
+    state.deck.forEach(function (item, i) {
+      frag.appendChild(createCard(item, i));
+    });
+    board.appendChild(frag);
+  }
+
+  /* ---------- 计时 ---------- */
+
+  function startTimer() {
+    state.startTime = Date.now();
+    stopTimer();
+    state.timerId = setInterval(updateTimer, 500);
+    updateTimer();
+  }
+
+  function stopTimer() {
+    if (state.timerId) {
+      clearInterval(state.timerId);
+      state.timerId = null;
+    }
+  }
+
+  function updateTimer() {
+    var sec = Math.floor((Date.now() - state.startTime) / 1000);
+    timeEl.textContent = formatTime(sec);
+  }
+
+  function elapsed() {
+    return Math.floor((Date.now() - state.startTime) / 1000);
+  }
+
+  /* ---------- 分数 / 显示 ---------- */
+
+  function bumpEl(el) {
+    el.classList.remove('bump');
+    void el.offsetWidth;
+    el.classList.add('bump');
+  }
+
+  function updateMoves() {
+    movesEl.textContent = state.moves;
+    bumpEl(movesEl);
+  }
+
+  /* ---------- 翻牌逻辑 ---------- */
+
+  function onCardClick(el, item) {
+    if (state.lock || state.finished) return;
+    if (el.classList.contains('flipped') || el.classList.contains('matched')) return;
+    if (state.firstCard && state.firstCard.el === el) return;
+
+    el.classList.add('flipped');
+
+    if (!state.firstCard) {
+      state.firstCard = { el: el, item: item };
+      return;
+    }
+
+    state.moves++;
+    updateMoves();
+
+    var second = { el: el, item: item };
+    if (state.firstCard.item.id === item.id) {
+      // 匹配
+      var firstCard = state.firstCard;
+      state.firstCard = null;
+      state.lock = true;
+      setTimeout(function () {
+        firstCard.el.classList.add('matched');
+        second.el.classList.add('matched');
+        state.matched++;
+        state.lock = false;
+        if (state.matched >= TOTAL_PAIRS) {
+          finish();
+        }
+      }, 350);
+    } else {
+      // 不匹配
+      state.lock = true;
+      var firstCard2 = state.firstCard;
+      state.firstCard = null;
+      firstCard2.el.classList.add('wrong');
+      second.el.classList.add('wrong');
+      setTimeout(function () {
+        firstCard2.el.classList.remove('flipped', 'wrong');
+        second.el.classList.remove('flipped', 'wrong');
+        state.lock = false;
+      }, 850);
+    }
+  }
+
+  /* ---------- 完成 ---------- */
+
+  function starRating(moves) {
+    // 16 步以内 3 星，24 步以内 2 星，其余 1 星
+    if (moves <= 16) return 3;
+    if (moves <= 24) return 2;
+    return 1;
+  }
+
+  function finish() {
+    state.finished = true;
+    stopTimer();
+    var sec = elapsed();
+    var stars = starRating(state.moves);
+    var record = { moves: state.moves, time: sec, stars: stars, date: Date.now() };
+    saveRecord(record);
+
+    var best = getBest();
+
+    overlayTitle.textContent = stars === 3 ? '完美！' : stars === 2 ? '不错！' : '完成';
+    overlayStars.textContent = '★'.repeat(stars) + '☆'.repeat(3 - stars);
+
+    var detail = '步数 <b>' + state.moves + '</b> · 时间 <b>' + formatTime(sec) + '</b>';
+    if (best) {
+      if (record.moves === best.moves && record.time === best.time) {
+        detail += '<br>🎉 <b>新纪录！</b>';
+      } else {
+        detail += '<br>最佳 <b>' + best.moves + ' 步 / ' + formatTime(best.time) + '</b>';
+      }
+    } else {
+      detail += '<br>🎉 首次完成';
+    }
+    overlayDetail.innerHTML = detail;
+
+    bestHint.textContent = fmtBest(getBest());
+
+    setTimeout(function () {
+      overlay.classList.add('show');
+    }, 400);
+  }
+
+  /* ---------- 新游戏 ---------- */
+
+  function newGame() {
+    stopTimer();
+    state.deck = buildDeck();
+    state.firstCard = null;
+    state.lock = false;
+    state.moves = 0;
+    state.matched = 0;
+    state.finished = false;
+    movesEl.textContent = '0';
+    timeEl.textContent = '0:00';
+    overlay.classList.remove('show');
+    render();
+    // 首次点击时再开始计时（避免看牌阶段计时）
+    state.startTime = 0;
+    var started = false;
+    var onStart = function () {
+      if (started) return;
+      started = true;
+      startTimer();
+      board.removeEventListener('click', onStart, true);
+    };
+    board.addEventListener('click', onStart, true);
+  }
+
+  /* ---------- 事件 ---------- */
+
+  restartBtn.addEventListener('click', newGame);
+  overlayRestart.addEventListener('click', newGame);
+
+  // 阻止页面滚动
+  document.addEventListener('touchmove', function (e) {
+    e.preventDefault();
+  }, { passive: false });
+
+  /* ---------- 启动 ---------- */
+
+  bestHint.textContent = fmtBest(getBest());
+  newGame();
+})();
+</script>
+</body>
+</html>
