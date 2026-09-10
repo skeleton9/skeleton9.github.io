@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#162b35">
+  <title>孩子的体验资本｜一份面向未来的成长地图</title>
+  <meta name="description" content="父母能给孩子的，不只是一次次活动，而是一套持续产生能力、关系与选择权的成长系统。">
+  <style>
+    :root{--ink:#162b35;--muted:#66777d;--paper:#f7f3e9;--card:#fffdf7;--line:#d8d1c3;--orange:#f2633b;--yellow:#f4bd38;--teal:#1f776d;--blue:#3f6f91;--shadow:0 18px 55px rgba(25,45,52,.09)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:var(--paper);font-family:"PingFang SC","Noto Sans SC","Microsoft YaHei",system-ui,sans-serif;line-height:1.7}button{font:inherit;color:inherit}a{color:inherit}.wrap{width:min(1160px,calc(100% - 40px));margin:auto}
+    .hero{min-height:92vh;color:#f7f3e9;background:var(--ink);position:relative;overflow:hidden;display:grid;align-items:center;padding:48px 0 64px}.hero:before,.hero:after{content:"";position:absolute;border:1px solid rgba(244,189,56,.26);border-radius:50%}.hero:before{width:620px;height:620px;right:-190px;top:-190px;box-shadow:0 0 0 58px rgba(244,189,56,.05),0 0 0 116px rgba(244,189,56,.035)}.hero:after{width:260px;height:260px;left:-130px;bottom:-110px;box-shadow:0 0 0 44px rgba(31,119,109,.18)}
+    .eyebrow{font-size:13px;letter-spacing:.19em;text-transform:uppercase;color:#f4bd38;font-weight:800}.hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.3fr .7fr;gap:72px;align-items:end}.hero h1{font-family:Georgia,"Songti SC",serif;font-size:clamp(54px,9vw,108px);line-height:.97;letter-spacing:-.055em;margin:18px 0 28px;max-width:850px}.hero h1 em{font-style:normal;color:var(--yellow)}.lead{font-size:clamp(18px,2vw,24px);max-width:720px;color:#cdd8d8;line-height:1.65}.formula{padding:28px 0 4px;border-top:1px solid rgba(255,255,255,.22)}.formula strong{display:block;color:#fff;font-family:Georgia,"Songti SC",serif;font-size:24px;margin-bottom:12px}.formula p{color:#afc1c3;margin:0}.scroll{display:inline-flex;margin-top:42px;gap:10px;align-items:center;text-decoration:none;font-weight:700}.scroll span{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--orange);transition:.2s}.scroll:hover span{transform:translateY(3px)}
+    section{padding:104px 0}.section-head{display:grid;grid-template-columns:.8fr 1.2fr;gap:54px;margin-bottom:54px;align-items:end}.kicker{color:var(--orange);font-weight:800;letter-spacing:.13em;font-size:13px}.section-head h2{font-family:Georgia,"Songti SC",serif;font-size:clamp(38px,5vw,62px);line-height:1.12;letter-spacing:-.035em;margin:10px 0 0}.section-head p{font-size:18px;color:var(--muted);margin:0;max-width:650px}
+    .filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px}.filter{border:1px solid var(--line);background:transparent;border-radius:999px;padding:9px 17px;cursor:pointer;font-weight:700;transition:.2s}.filter:hover,.filter.active{background:var(--ink);border-color:var(--ink);color:white}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{background:var(--card);border:1px solid var(--line);padding:28px;min-height:300px;display:flex;flex-direction:column;box-shadow:0 2px 0 rgba(22,43,53,.03);transition:.25s}.card:hover{transform:translateY(-5px);box-shadow:var(--shadow);border-color:transparent}.card.hidden{display:none}.card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:30px}.num{font-family:Georgia,serif;font-size:15px;color:var(--muted)}.tag{font-size:12px;padding:5px 10px;border-radius:999px;background:#e9eee9;font-weight:700}.card h3{font-family:Georgia,"Songti SC",serif;font-size:25px;line-height:1.25;margin:0 0 12px}.card p{color:var(--muted);margin:0}.card blockquote{margin:auto 0 0;padding-top:20px;border-top:1px solid var(--line);font-weight:800;color:var(--teal)}
+    .principle{background:#efebe0}.three{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.rule{padding:36px 36px 42px;border-right:1px solid var(--line)}.rule:last-child{border:0}.rule b{display:block;color:var(--orange);font-family:Georgia,serif;font-size:52px;line-height:1;margin-bottom:26px}.rule h3{font-size:22px;margin:0 0 12px}.rule p{color:var(--muted);margin:0}.rule strong{color:var(--ink)}
+    .stages{background:var(--ink);color:#fff}.stages .section-head p{color:#afc1c3}.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:rgba(255,255,255,.15)}.stage{background:var(--ink);padding:34px;min-height:290px}.stage .age{color:var(--yellow);font-weight:800}.stage h3{font-family:Georgia,"Songti SC",serif;font-size:27px;margin:14px 0}.stage ul{padding-left:18px;margin:0;color:#cbd5d6}.stage li{margin:7px 0}.stage .role{font-size:13px;color:#90a7aa;border-top:1px solid rgba(255,255,255,.15);margin-top:20px;padding-top:16px}
+    .action-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:54px}.quote-panel{background:var(--orange);color:#fff;padding:42px;align-self:start;position:sticky;top:24px}.quote-panel p{font-family:Georgia,"Songti SC",serif;font-size:clamp(28px,3.8vw,46px);line-height:1.35;margin:0}.quote-panel small{display:block;margin-top:26px;color:#ffe1d6}.checklist{border-top:1px solid var(--line)}.check{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;padding:20px 4px;border-bottom:1px solid var(--line);cursor:pointer}.check input{appearance:none;width:24px;height:24px;border:2px solid var(--ink);border-radius:50%;display:grid;place-items:center}.check input:checked{background:var(--teal);border-color:var(--teal)}.check input:checked:after{content:"✓";color:#fff;font-size:15px;font-weight:900}.check span{font-weight:750}.check small{color:var(--muted)}.check:has(input:checked) span{text-decoration:line-through;color:var(--muted)}.progress-row{display:flex;justify-content:space-between;align-items:center;margin:22px 0 12px;font-weight:800}.bar{height:9px;border-radius:999px;background:#dfd8c9;overflow:hidden;margin-bottom:28px}.bar i{display:block;height:100%;width:0;background:var(--teal);transition:.3s}.print{border:0;background:var(--ink);color:#fff;padding:13px 20px;cursor:pointer;font-weight:800}.print:hover{background:var(--teal)}
+    .reflection{padding-top:30px}.reflection h3{font-size:23px}.questions{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.q{background:var(--card);border:1px solid var(--line);padding:20px;font-weight:700}.q i{color:var(--orange);font-style:normal;margin-right:8px}
+    footer{background:#0d2028;color:#d5dedf;padding:64px 0}.footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:end}footer strong{font-family:Georgia,"Songti SC",serif;color:#fff;font-size:clamp(28px,4vw,44px);line-height:1.35}.note{color:#8ea3a7;font-size:14px;text-align:right}
+    @media(max-width:850px){.hero{min-height:auto}.hero-grid,.section-head,.action-grid,.footer-grid{grid-template-columns:1fr;gap:30px}.cards{grid-template-columns:repeat(2,1fr)}.timeline{grid-template-columns:repeat(2,1fr)}.three{grid-template-columns:1fr}.rule{border-right:0;border-bottom:1px solid var(--line)}.quote-panel{position:static}.note{text-align:left}}
+    @media(max-width:560px){.wrap{width:min(100% - 28px,1160px)}section{padding:72px 0}.hero{padding:42px 0 54px}.hero h1{font-size:53px}.cards,.timeline,.questions{grid-template-columns:1fr}.card{min-height:270px}.stage{min-height:0}.check{grid-template-columns:auto 1fr}.check small{grid-column:2}.section-head{margin-bottom:34px}}
+    @media print{.hero{min-height:auto;padding:40px 0}.scroll,.filters,.print{display:none}.cards{grid-template-columns:repeat(2,1fr)}section{padding:48px 0}.card{break-inside:avoid}.quote-panel{position:static}.stages{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow">Experience Capital · 成长地图</div>
+        <h1>孩子的<br><em>体验资本</em></h1>
+        <p class="lead">父母能给孩子的，不只是一次次活动，而是一套持续产生能力、关系与选择权的成长系统。</p>
+        <a class="scroll" href="#map">打开成长地图 <span>↓</span></a>
+      </div>
+      <div class="formula">
+        <strong>体验 × 反思 × 时间 = 成长复利</strong>
+        <p>经历本身不会自动变成能力。只有孩子亲自选择、承担结果，并完成复盘，体验才真正进入他的生命结构。</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="map">
+      <div class="wrap">
+        <div class="section-head"><div><div class="kicker">01 · 十二类体验</div><h2>不是丰富履历，<br>而是建立内在模型</h2></div><p>成长的底层，是孩子逐渐确认：我能做成事情，我能承受失败，我能与人合作，我也能为世界增加一点东西。</p></div>
+        <div class="filters" aria-label="筛选体验类型"><button class="filter active" data-filter="all">全部体验</button><button class="filter" data-filter="self">自我与行动</button><button class="filter" data-filter="world">真实世界</button><button class="filter" data-filter="others">关系与责任</button></div>
+        <div class="cards">
+          <article class="card" data-kind="self"><div class="card-top"><span class="num">01</span><span class="tag">自主性</span></div><h3>独立完成一件事</h3><p>自己规划出行、做一道菜、整理物品，或完成一个数周项目。父母提供边界，但不替他走完过程。</p><blockquote>“这是我自己解决的。”</blockquote></article>
+          <article class="card" data-kind="self"><div class="card-top"><span class="num">02</span><span class="tag">因果感</span></div><h3>选择并承担小后果</h3><p>零花钱花完就等待，忘带物品就体验不方便，选择一项活动就履行承诺。</p><blockquote>“我的选择会产生结果。”</blockquote></article>
+          <article class="card" data-kind="self"><div class="card-top"><span class="num">03</span><span class="tag">恢复力</span></div><h3>经历失败再重来</h3><p>落选、失利、作品不被喜欢，都可以成为低成本练习：难过、找原因、调整、再尝试。</p><blockquote>“失败不等于我不行。”</blockquote></article>
+          <article class="card" data-kind="self"><div class="card-top"><span class="num">04</span><span class="tag">长期主义</span></div><h3>看见坚持的复利</h3><p>坚持运动、乐器、种植或长期作品半年以上，让进步留下可见的记录。</p><blockquote>“一点点，也能变得完全不同。”</blockquote></article>
+          <article class="card" data-kind="world"><div class="card-top"><span class="num">05</span><span class="tag">创造力</span></div><h3>创造，而不只是消费</h3><p>写故事、画漫画、做游戏、拍短片、研究问题。可以使用AI，但必须自己判断、修改与表达。</p><blockquote>“我能为世界增加什么？”</blockquote></article>
+          <article class="card" data-kind="world"><div class="card-top"><span class="num">06</span><span class="tag">现实感</span></div><h3>理解社会如何运转</h3><p>走进父母的工作、商店、工厂和社区，理解商品、职业、成本、价格与价值交换。</p><blockquote>“价值来自解决真实问题。”</blockquote></article>
+          <article class="card" data-kind="others"><div class="card-top"><span class="num">07</span><span class="tag">协作力</span></div><h3>与不同的人合作</h3><p>当队员，也当负责人；练习表达分歧、请求帮助、被拒绝、道歉与修复关系。</p><blockquote>“复杂的人，也可以一起做事。”</blockquote></article>
+          <article class="card" data-kind="others"><div class="card-top"><span class="num">08</span><span class="tag">责任感</span></div><h3>照顾别人、承担责任</h3><p>固定家务、照顾宠物、帮助老人或参与服务，让责任真实影响家庭与他人。</p><blockquote>“我也是能够贡献的人。”</blockquote></article>
+          <article class="card" data-kind="world"><div class="card-top"><span class="num">09</span><span class="tag">资源观</span></div><h3>管理有限的金钱</h3><p>固定零花钱，设置储蓄、消费与分享账户，允许一次小额错误消费。</p><blockquote>“钱的本质是取舍与选择权。”</blockquote></article>
+          <article class="card" data-kind="world"><div class="card-top"><span class="num">10</span><span class="tag">世界观</span></div><h3>看见不同的生活</h3><p>接触不同地区、职业、文化与人生状态。旅行重在观察、交流和参与，而不是打卡。</p><blockquote>“我身边的生活，不是世界的全部。”</blockquote></article>
+          <article class="card" data-kind="self"><div class="card-top"><span class="num">11</span><span class="tag">身体感</span></div><h3>自然、身体与适度冒险</h3><p>徒步、露营、游泳、骑行与急救训练，在安全边界内感受疲劳、紧张与坚持。</p><blockquote>“不舒服，不一定意味着危险。”</blockquote></article>
+          <article class="card" data-kind="self"><div class="card-top"><span class="num">12</span><span class="tag">自我认识</span></div><h3>独处、无聊与内在兴趣</h3><p>留出没有课程、屏幕和奖励的时间，让孩子自己寻找事情，发现真正喜欢什么。</p><blockquote>“我想要什么？”</blockquote></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="principle">
+      <div class="wrap">
+        <div class="section-head"><div><div class="kicker">02 · 父母的边界</div><h2>好的体验，<br>需要留一点空白</h2></div><p>父母不是成长项目经理。我们更像环境设计者：控制风险，提供资源，然后允许孩子用自己的方式完成。</p></div>
+        <div class="three"><div class="rule"><b>1</b><h3>不要变成另一种鸡娃</h3><p>如果旅行要写报告、兴趣必须考级、项目必须获奖，孩子学到的仍然只是<strong>迎合评价</strong>。</p></div><div class="rule"><b>2</b><h3>经历之后留下复盘</h3><p>不急着讲道理，先问他看见了什么、做了什么决定、下次想改变什么。<strong>表达让体验沉淀</strong>。</p></div><div class="rule"><b>3</b><h3>逐渐归还主导权</h3><p>从父母设计环境，到共同决定，再到孩子制定方案。最终目标是让他<strong>主动创造经历</strong>。</p></div></div>
+      </div>
+    </section>
+
+    <section class="stages">
+      <div class="wrap">
+        <div class="section-head"><div><div class="kicker">03 · 年龄阶梯</div><h2>同一种能力，<br>不同阶段不同做法</h2></div><p>年龄只是参考。判断标准不是“别人家的孩子会什么”，而是任务是否比孩子现有能力高一点，同时失败成本足够低。</p></div>
+        <div class="timeline"><div class="stage"><div class="age">3—6 岁</div><h3>参与真实生活</h3><ul><li>选择衣服与食物</li><li>整理玩具、照顾植物</li><li>说出感受与需要</li></ul><div class="role">父母角色：示范、陪伴、保证安全</div></div><div class="stage"><div class="age">7—9 岁</div><h3>完成完整小任务</h3><ul><li>独立购物与找零</li><li>管理一周零花钱</li><li>承担固定家务</li></ul><div class="role">父母角色：给步骤，少替代</div></div><div class="stage"><div class="age">10—12 岁</div><h3>开始规划与合作</h3><ul><li>规划一次家庭活动</li><li>完成数周创作项目</li><li>处理同伴小冲突</li></ul><div class="role">父母角色：问问题，让孩子做决定</div></div><div class="stage"><div class="age">13 岁以上</div><h3>接近真实世界</h3><ul><li>管理较长期预算</li><li>发起服务或商业项目</li><li>独立出行与公开表达</li></ul><div class="role">父母角色：约定边界，提供支持</div></div></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="section-head"><div><div class="kicker">04 · 从本周开始</div><h2>五件真正<br>值得优先的事</h2></div><p>不必一次安排十二种体验。选一件符合孩子年龄、能够真实承担、并可在本周开始的小事。</p></div>
+        <div class="action-grid">
+          <aside class="quote-panel"><p>不是培养一个“经历丰富”的孩子，而是培养一个能够主动创造经历的人。</p><small>选择一项，先完成一个小闭环。</small></aside>
+          <div>
+            <div class="progress-row"><span>家庭体验清单</span><span id="count">0 / 5</span></div><div class="bar"><i id="bar"></i></div>
+            <div class="checklist">
+              <label class="check"><input type="checkbox"><span>独立完成一个真实任务</span><small>自主性</small></label>
+              <label class="check"><input type="checkbox"><span>承担一次选择带来的小后果</span><small>因果感</small></label>
+              <label class="check"><input type="checkbox"><span>启动一个持续半年以上的项目</span><small>长期主义</small></label>
+              <label class="check"><input type="checkbox"><span>经历一次合作、冲突与关系修复</span><small>协作力</small></label>
+              <label class="check"><input type="checkbox"><span>创造一个真正交付给别人的作品</span><small>价值感</small></label>
+            </div>
+            <button class="print" onclick="window.print()">打印 / 保存为 PDF</button>
+            <div class="reflection"><h3>体验后的五个复盘问题</h3><div class="questions"><div class="q"><i>01</i>哪个瞬间最让你意外？</div><div class="q"><i>02</i>你做了什么决定？</div><div class="q"><i>03</i>哪件事没有做好？</div><div class="q"><i>04</i>如果再来一次，你会怎么做？</div><div class="q"><i>05</i>这件事让你发现自己是什么样的人？</div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer><div class="wrap footer-grid"><strong>“我能够理解现实、采取行动、承受结果，并通过调整让事情变得更好。”</strong><div class="note">孩子真正需要带走的，不是标准答案，而是这份内在确信。</div></div></footer>
+  <script>
+    const filters=document.querySelectorAll('.filter'),cards=document.querySelectorAll('.card');
+    filters.forEach(btn=>btn.addEventListener('click',()=>{filters.forEach(x=>x.classList.remove('active'));btn.classList.add('active');const f=btn.dataset.filter;cards.forEach(c=>c.classList.toggle('hidden',f!=='all'&&c.dataset.kind!==f));}));
+    const checks=[...document.querySelectorAll('.check input')],count=document.getElementById('count'),bar=document.getElementById('bar');
+    function update(){const n=checks.filter(x=>x.checked).length;count.textContent=n+' / '+checks.length;bar.style.width=(n/checks.length*100)+'%';localStorage.setItem('experience-capital-checks',JSON.stringify(checks.map(x=>x.checked)));}
+    try{const saved=JSON.parse(localStorage.getItem('experience-capital-checks'));if(Array.isArray(saved))checks.forEach((x,i)=>x.checked=!!saved[i]);}catch(e){}
+    checks.forEach(x=>x.addEventListener('change',update));update();
+  </script>
+</body>
+</html>

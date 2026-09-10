@@ -16,10 +16,22 @@
   icon: fa-arrow-trend-up
   group: Pages
 
+- title: 孩子的体验资本
+  description: 一份面向未来，持续产生能力、关系与选择权的成长地图
+  url: /pages/m/children-growth.html
+  icon: fa-children
+  group: Pages
+
 - title: 如何赢得朋友并影响他人
   description: 用一张可视化长页读懂核心原则、心理机制、应用场景与实践方法
   url: /pages/m/how-to-win-friends-and-influence.html
   icon: fa-handshake
+  group: Pages
+
+- title: Microduck × C端应用机会地图
+  description: 探索具身 AI 的消费级应用形态、留存动力与产品切入路径
+  url: /pages/m/microduck_consumer_opportunities.html
+  icon: fa-robot
   group: Pages
 
 - title: 你不是世界的住客
