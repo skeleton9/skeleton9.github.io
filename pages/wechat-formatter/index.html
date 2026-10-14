@@ -24,12 +24,17 @@
   .bar button.mode{border:1px solid #e0e0e0;background:#fafafa;color:#555;font-size:14px;padding:8px 16px;border-radius:20px;cursor:pointer;}
   .bar button.mode:active{transform:scale(0.97);}
   /* 默认即为左右布局：左编辑、右预览（宽度可拖拽调整） */
-  #mdInput{width:100%;height:80vh;box-sizing:border-box;border:none;outline:none;resize:none;
+  #mdInput{width:100%;height:auto;min-height:0;flex:1;box-sizing:border-box;border:none;outline:none;resize:none;overflow:auto;overscroll-behavior:contain;
     padding:18px 20px;font-family:Consolas,'Courier New',monospace;font-size:14px;line-height:1.7;color:#2b2b2b;background:#fbfbfd;tab-size:2;}
   #mdInput:focus{background:#fff;}
-  .split{display:flex;align-items:stretch;gap:0;max-width:1320px;margin:10px auto 60px;border:1px solid #ececec;border-radius:10px;overflow:hidden;background:#fff;--edit-w:44%;}
-  .editor-pane{flex:0 0 var(--edit-w,44%);background:#fbfbfd;min-width:0;overflow:auto;}
-  .preview-pane{flex:1 1 56%;min-width:0;overflow:auto;}
+  .split{display:flex;align-items:stretch;gap:0;max-width:1320px;height:calc(100dvh - 190px);min-height:420px;margin:10px auto 24px;border:1px solid #ececec;border-radius:10px;overflow:hidden;background:#fff;--edit-w:44%;}
+  .editor-pane{display:flex;flex-direction:column;flex:0 0 var(--edit-w,44%);height:100%;background:#fbfbfd;min-width:0;min-height:0;overflow:hidden;}
+  .preview-pane{flex:1 1 56%;height:100%;min-width:0;min-height:0;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
+  .md-toolbar{display:flex;align-items:center;gap:5px;flex:0 0 auto;padding:8px 10px;border-bottom:1px solid #e6e6ea;background:#fff;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;}
+  .md-toolbar button{flex:0 0 auto;min-width:32px;height:30px;padding:0 8px;border:1px solid #dedee5;border-radius:6px;background:#f8f8fa;color:#45454d;font:600 13px/1 Consolas,'Courier New',monospace;cursor:pointer;}
+  .md-toolbar button:hover{border-color:#4a90d9;color:#286fae;background:#f1f7fd;}
+  .md-toolbar button:active{transform:translateY(1px);}
+  .md-toolbar .toolbar-sep{flex:0 0 1px;height:20px;margin:0 2px;background:#e3e3e8;}
   .resizer{flex:0 0 7px;width:7px;cursor:col-resize;background:#e6e6ea;position:relative;}
   .resizer:hover,.resizer.active{background:#4a90d9;}
   .resizer::after{content:"";position:absolute;left:2px;top:50%;transform:translateY(-50%);width:2px;height:30px;background:#b9b9c2;border-radius:1px;}
@@ -42,17 +47,16 @@
   /* 仅预览模式：隐藏编辑区与分隔条，预览占满整宽 */
   body.preview-only .editor-pane{display:none;}
   body.preview-only .resizer{display:none;}
-  body.preview-only .split{display:block;max-width:740px;margin:10px auto 60px;border:none;background:transparent;overflow:visible;}
-  body.preview-only .preview-pane{flex:none;overflow:visible;}
+  body.preview-only .split{display:block;max-width:740px;height:auto;min-height:0;margin:10px auto 60px;border:none;background:transparent;overflow:visible;}
+  body.preview-only .preview-pane{height:auto;flex:none;overflow:visible;}
   @media (max-width:899px){
     /* 窄屏：默认仅预览，点“编辑”切到全宽编辑；分隔条在窄屏隐藏 */
-    .split{display:block;max-width:740px;margin:10px auto 60px;border:none;background:transparent;overflow:visible;}
+    .split{display:block;max-width:740px;height:auto;min-height:0;margin:10px auto 60px;border:none;background:transparent;overflow:visible;}
     .editor-pane{display:none;}
     .preview-pane{display:block;overflow:visible;}
-    body:not(.preview-only) .editor-pane{display:block;}
+    body:not(.preview-only) .editor-pane{display:flex;height:62vh;}
     body:not(.preview-only) .preview-pane{display:none;}
     .resizer{display:none;}
-    #mdInput{height:62vh;}
   }
 </style>
 </head>
@@ -72,6 +76,19 @@
   <div class="hint">标题请在公众号后台单独填写（本页标题不进入复制区）。页面默认为「左编辑 / 右预览」布局，左侧改稿右侧实时刷新；中间分隔条可拖动调整左右宽度，点「📱 手机」可把右侧预览锁定为手机宽度查看窄屏效果，点「👁 仅预览」可隐藏编辑区只看排版。上方两组可分别选择「配色」与「结构格式」自由组合，正文实时更新；点击「复制正文」会以当前组合复制，到后台 Ctrl/⌘+V 粘贴即可保留格式。</div>
   <div class="split" id="split">
     <div class="pane editor-pane" id="editorPane">
+      <div class="md-toolbar" id="mdToolbar" role="toolbar" aria-label="Markdown 快捷格式">
+        <button type="button" data-md-action="h2" title="二级标题">H2</button>
+        <button type="button" data-md-action="bold" title="加粗（Ctrl/⌘+B）"><strong>B</strong></button>
+        <button type="button" data-md-action="italic" title="斜体（Ctrl/⌘+I）"><em>I</em></button>
+        <button type="button" data-md-action="strike" title="删除线"><s>S</s></button>
+        <button type="button" data-md-action="code" title="行内代码">&lt;/&gt;</button>
+        <span class="toolbar-sep" aria-hidden="true"></span>
+        <button type="button" data-md-action="quote" title="引用">❯</button>
+        <button type="button" data-md-action="ul" title="无序列表">• List</button>
+        <button type="button" data-md-action="ol" title="有序列表">1. List</button>
+        <button type="button" data-md-action="link" title="链接">Link</button>
+        <button type="button" data-md-action="hr" title="分隔线">―</button>
+      </div>
       <textarea id="mdInput" spellcheck="false"></textarea>
     </div>
     <div class="resizer" id="resizer" title="拖动调整左右宽度"></div>
@@ -421,6 +438,134 @@ document.getElementById('mdInput').addEventListener('input',function(){
     applyCombo(curColor, curFormat);
   },250);
 });
+
+/* ---------- Markdown 快捷格式 ---------- */
+function updateMarkdownValue(value, start, end){
+  var ta=document.getElementById('mdInput');
+  ta.value=value;
+  ta.focus();
+  ta.setSelectionRange(start, end);
+  ta.dispatchEvent(new Event('input',{bubbles:true}));
+}
+
+function toggleInlineMarkdown(open, close, placeholder){
+  var ta=document.getElementById('mdInput');
+  var value=ta.value, start=ta.selectionStart, end=ta.selectionEnd;
+  var selected=value.slice(start,end);
+
+  if(selected.slice(0,open.length)===open && selected.slice(-close.length)===close){
+    var inner=selected.slice(open.length,selected.length-close.length);
+    updateMarkdownValue(value.slice(0,start)+inner+value.slice(end),start,start+inner.length);
+    return;
+  }
+  if(value.slice(Math.max(0,start-open.length),start)===open && value.slice(end,end+close.length)===close){
+    updateMarkdownValue(
+      value.slice(0,start-open.length)+selected+value.slice(end+close.length),
+      start-open.length,
+      end-open.length
+    );
+    return;
+  }
+
+  var content=selected || placeholder;
+  var replacement=open+content+close;
+  var contentStart=start+open.length;
+  updateMarkdownValue(value.slice(0,start)+replacement+value.slice(end),contentStart,contentStart+content.length);
+}
+
+function toggleLineMarkdown(action){
+  var ta=document.getElementById('mdInput');
+  var value=ta.value, start=ta.selectionStart, end=ta.selectionEnd;
+  var blockStart=value.lastIndexOf('\n',Math.max(0,start-1))+1;
+  var blockEnd=value.indexOf('\n',end);
+  if(blockEnd<0) blockEnd=value.length;
+  var lines=value.slice(blockStart,blockEnd).split('\n');
+  var marked;
+
+  if(action==='h2') marked=lines.every(function(line){return line==='' || /^##\s+/.test(line);});
+  if(action==='quote') marked=lines.every(function(line){return line==='' || /^>\s?/.test(line);});
+  if(action==='ul') marked=lines.every(function(line){return line==='' || /^[-*+]\s+/.test(line);});
+  if(action==='ol') marked=lines.every(function(line){return line==='' || /^\d+[.)]\s+/.test(line);});
+
+  var number=0;
+  var replacement=lines.map(function(line){
+    if(line==='') return line;
+    if(marked){
+      if(action==='h2') return line.replace(/^##\s+/,'');
+      if(action==='quote') return line.replace(/^>\s?/,'');
+      if(action==='ul') return line.replace(/^[-*+]\s+/,'');
+      return line.replace(/^\d+[.)]\s+/, '');
+    }
+    if(action==='h2') return '## '+line.replace(/^#{1,6}\s+/,'');
+    if(action==='quote') return '> '+line.replace(/^>\s?/,'');
+    if(action==='ul') return '- '+line.replace(/^\s*(?:[-*+]|\d+[.)])\s+/,'');
+    number++;
+    return number+'. '+line.replace(/^\s*(?:[-*+]|\d+[.)])\s+/,'');
+  }).join('\n');
+
+  updateMarkdownValue(value.slice(0,blockStart)+replacement+value.slice(blockEnd),blockStart,blockStart+replacement.length);
+}
+
+function toggleLinkMarkdown(){
+  var ta=document.getElementById('mdInput');
+  var value=ta.value, start=ta.selectionStart, end=ta.selectionEnd;
+  var selected=value.slice(start,end);
+  var full=selected.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+  if(full){
+    updateMarkdownValue(value.slice(0,start)+full[1]+value.slice(end),start,start+full[1].length);
+    return;
+  }
+  var tail=value.slice(end).match(/^\]\([^)]+\)/);
+  if(start>0 && value.charAt(start-1)==='[' && tail){
+    updateMarkdownValue(value.slice(0,start-1)+selected+value.slice(end+tail[0].length),start-1,end-1);
+    return;
+  }
+  var text=selected || '链接文字';
+  var replacement='['+text+'](https://)';
+  updateMarkdownValue(value.slice(0,start)+replacement+value.slice(end),start+1,start+1+text.length);
+}
+
+function insertMarkdownRule(){
+  var ta=document.getElementById('mdInput');
+  var value=ta.value, start=ta.selectionStart, end=ta.selectionEnd;
+  var before=start>0 && value.charAt(start-1)!=='\n' ? '\n\n' : '';
+  var after=end<value.length && value.charAt(end)!=='\n' ? '\n\n' : '\n';
+  var insertion=before+'---'+after;
+  var cursor=start+insertion.length;
+  updateMarkdownValue(value.slice(0,start)+insertion+value.slice(end),cursor,cursor);
+}
+
+function applyMarkdownAction(action){
+  if(action==='bold') return toggleInlineMarkdown('**','**','加粗文字');
+  if(action==='italic') return toggleInlineMarkdown('*','*','斜体文字');
+  if(action==='strike') return toggleInlineMarkdown('~~','~~','删除文字');
+  if(action==='code') return toggleInlineMarkdown('`','`','代码');
+  if(action==='link') return toggleLinkMarkdown();
+  if(action==='hr') return insertMarkdownRule();
+  toggleLineMarkdown(action);
+}
+
+(function markdownToolbar(){
+  var toolbar=document.getElementById('mdToolbar');
+  var ta=document.getElementById('mdInput');
+  if(!toolbar||!ta) return;
+  toolbar.addEventListener('mousedown',function(e){
+    if(e.target.closest('button')) e.preventDefault();
+  });
+  toolbar.addEventListener('click',function(e){
+    var btn=e.target.closest('button[data-md-action]');
+    if(btn) applyMarkdownAction(btn.getAttribute('data-md-action'));
+  });
+  ta.addEventListener('keydown',function(e){
+    if(!(e.ctrlKey||e.metaKey)) return;
+    var key=e.key.toLowerCase();
+    if(key==='b'||key==='i'){
+      e.preventDefault();
+      applyMarkdownAction(key==='b'?'bold':'italic');
+    }
+  });
+})();
+
 (function init(){
   // 窄屏默认进入“仅预览”模式（编辑区在窄屏下单独全宽展示）
   if(window.innerWidth < 900){ document.body.classList.add('preview-only'); }

@@ -625,6 +625,9 @@
     tiles.clear();
     flushRemovals();
     while (tileLayer.firstChild) tileLayer.removeChild(tileLayer.firstChild);
+    grid = Array.from({ length: SIZE }, function () {
+      return [null, null, null, null];
+    });
     for (var y = 0; y < SIZE; y++) {
       for (var x = 0; x < SIZE; x++) {
         if (cells[y][x]) createTile(x, y, cells[y][x], { silent: true });
