@@ -1,0 +1,166 @@
+/* Toy-workshop art direction: rounded silhouettes, consistent upper-left light,
+   shaded enamel, thick glass and quiet blue surroundings. */
+:root{--bg:#173b53;--muted:#bfd5e1;--accent:#f1cc71;--text:#f2f3ea}
+body{background:radial-gradient(ellipse at 15% 0,#477d8c66,transparent 55%),radial-gradient(ellipse at 90% 65%,#25647540,transparent 55%),#173b53}
+body:before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.15;background-image:radial-gradient(#94c1c6 1px,transparent 1px);background-size:30px 30px}
+header{height:84px;border-bottom:1px solid #b4e0e21c}
+.brand{font-weight:900;font-size:29px;letter-spacing:1px;text-shadow:0 3px 0 #0d273d}
+.brand small{color:#b9d0dc;font-weight:700}
+.brandmark{position:relative;width:44px;height:44px;display:block;filter:drop-shadow(0 3px 1px #0c253b80)}
+.brandmark i{position:absolute;width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#ffe7a0,#e8b33d 65%,#9c6426);top:0;left:10px;box-shadow:inset 0 2px 2px #ffffff45}
+.brandmark i:nth-child(2){top:19px;left:0;background:radial-gradient(circle at 30% 25%,#9bdded,#408fd3 65%,#21578b)}
+.brandmark i:nth-child(3){top:19px;left:23px;background:radial-gradient(circle at 30% 25%,#ffb3a6,#dd6866 65%,#8f3d52)}
+main{max-width:1320px;grid-template-columns:minmax(0,1fr) 285px;padding-top:32px;gap:28px 30px}
+.intro{position:relative}.eyebrow{color:#f1d48e;font-weight:700;letter-spacing:1px}
+h1{font-size:40px;letter-spacing:1px;font-weight:900;line-height:1.25;color:#f1eddc;text-shadow:0 3px 0 #17314a;margin:14px 0}
+.intro p{font-size:15px;color:#c5dae2;line-height:1.7}
+.game{padding:25px 26px 26px;border:3px solid #142b43;border-radius:30px;background:linear-gradient(145deg,#446b82,#365771 55%,#2e4b65);box-shadow:inset 0 3px 0 #a4c9d44a,inset 0 -5px 0 #1c354b80,0 7px 0 #10293d,0 18px 30px #071a2c45}
+.game-top{padding:0 0 20px;border-bottom:2px solid #1d3c5380;gap:12px}
+.tag{font-size:12px;color:#c9dee7;letter-spacing:1px;font-weight:700}
+h2{font-size:24px;font-weight:800;text-shadow:0 2px 0 #18384d}
+h2 small{color:#ffe1a1;background:#142f4659;border:1px solid #9fb8c32e}
+.stats{gap:8px}.stats>div{min-width:70px;padding:10px 9px;border-radius:13px;background:#1a354c70;border:1px solid #102a3c70;box-shadow:inset 0 2px 3px #0c22353b,0 1px 0 #98b6c522}
+.stats strong{font-size:23px;font-weight:800;color:#f5e9c8;text-shadow:0 2px 0 #13283a}.stats span{color:#c9dbe4;font-size:11px}
+#board{min-height:490px;padding:36px 4px 25px;gap:34px 24px;background:radial-gradient(ellipse at 50% 92%,#142c4940,transparent 65%)}
+.tube{width:72px;height:379px;padding:9px 6px;gap:3px;border:3px solid #a3c4d492;border-top:0;border-bottom-width:6px;border-radius:0 0 34px 34px;background:linear-gradient(90deg,#c7ebed38,#bfe5e810 20%,#0a294a1a 48%,#bddfe807 72%,#d2eff02e 92%,#eefaff3d);box-shadow:inset 4px 0 5px #e5ffff25,inset -5px 0 7px #09253d50,inset 0 -5px 6px #d3f4f530,5px 10px 12px #11263b55}
+.tube:hover{background-color:#d3f4f507}
+.tube:before{height:12px;top:-7px;left:-6px;right:-6px;border:3px solid #b3d1db;border-radius:50%;background:linear-gradient(#1f3e59,#678d9e);box-shadow:inset 0 3px 3px #0a223d80,0 3px 0 #60869780,0 4px 3px #132f4040}
+.tube:after{top:13px;bottom:27px;left:4px;width:4px;background:linear-gradient(transparent,#e2f5ef75 12%,#e2f5ef25 72%,transparent)}
+.tube.selected{border-color:#f1cf79;box-shadow:inset 4px 0 5px #e5ffff25,inset -5px 0 7px #09253d50,0 0 0 3px #edc65f30,5px 10px 12px #11263b55}
+.tube.selected:before{border-color:#f1cf79}
+.tube.complete{border-color:#98cfad}.tube.complete:before{border-color:#add8bb}
+.tube-label{font-size:12px;font-weight:800;min-width:30px;text-align:center;padding:4px 8px;background:#1c3a5080;border:1px solid #9fc7d420;border-radius:20px;color:#d3e3e8;box-shadow:inset 0 1px 2px #10253745}
+.tube-wrap{gap:12px}.tube-wrap:before{bottom:26px;left:-10px;right:-10px;height:19px;background:radial-gradient(ellipse,#0b203991,transparent 70%)}
+.ball{width:48px;height:48px;border:1px solid #102a414d;background:radial-gradient(ellipse at 28% 20%,#fff3ce70,transparent 40%),radial-gradient(circle at 38% 30%,var(--color) 33%,color-mix(in srgb,var(--color),#10284c 22%) 72%,color-mix(in srgb,var(--color),#10284c 46%) 100%);box-shadow:inset 1px 2px 2px #fff9d447,inset -3px -5px 5px #14244c33,inset 1px -2px 1px #14244c33,1px 4px 3px #0b203966}
+.ball:before{width:14px;height:6px;left:8px;top:5px;background:#fff4da45;filter:blur(.4px)}
+.ball span{width:28px;height:28px;background:radial-gradient(circle at 35% 25%,#f1ead6,#dcd1b8);border:1px solid #fff4d46b;box-shadow:inset 0 1px 1px #fff8de80,0 1px 2px #17234370;color:#273245;font-size:23px;font-weight:800}
+.ball.drag-ghost{box-shadow:inset 1px 2px 2px #fff9d447,inset -3px -5px 5px #14244c33,5px 18px 14px #0b203973}
+#message{color:#dce6eb;min-height:42px;font-size:14px}.actions{gap:12px;border-top:2px solid #173c4f70;padding-top:20px}
+.actions button,.header-right button{background:linear-gradient(#64879e,#4c718b);border:2px solid #193950;box-shadow:inset 0 2px 0 #c9e5ed33,0 4px 0 #17344a,0 6px 9px #102b3d40;color:#f1f1e5;font-weight:700;text-shadow:0 1px 1px #183346;min-height:48px}
+.actions button:hover,.header-right button:hover{filter:brightness(1.07)}
+.actions button:active:not(:disabled),.header-right button:active{transform:translateY(2px);box-shadow:inset 0 2px 0 #c9e5ed33,0 2px 0 #17344a}
+.actions .primary,dialog .primary{background:linear-gradient(#f0cf79,#d8ad4e);border:2px solid #77552e;color:#3a301d;box-shadow:inset 0 2px 0 #ffebad88,0 4px 0 #77552e,0 6px 9px #102b3d40;text-shadow:0 1px 0 #ffe6a578}
+aside{padding:19px 0 0}.aside-title{font-weight:800;color:#e2e9e8;font-size:15px}.aside-title span:last-child{display:none}
+.difficulty{gap:14px}.difficulty button{min-height:82px;border:2px solid #17374c;background:linear-gradient(130deg,#3d647b,#32546d);box-shadow:inset 0 2px 0 #bad9e32b,0 4px 0 #112e43;border-radius:17px;padding:14px}
+.difficulty button.active{background:linear-gradient(130deg,#546e70,#3e5d66);border-color:#e4c275;box-shadow:inset 0 2px 0 #f2d79738,0 4px 0 #886a39}
+.mode-icon{display:grid;place-items:center;width:37px;height:40px;flex-shrink:0;background:linear-gradient(#f0d08a,#ca9a43);border-radius:10px;color:#68502c;font-size:26px;box-shadow:inset 0 2px 0 #ffe8a866,0 3px 0 #855c30;text-shadow:0 1px 0 #ffe5a3}
+.difficulty strong{font-size:15px;color:#f1efdf}.difficulty small{color:#c6d8e0;font-size:12px}.dots{color:#f0d38a;letter-spacing:1px}
+.rules{margin-top:28px;padding:20px 18px;background:#122f444d;border:1px solid #94bac326;border-radius:18px}.rules h3{margin-top:0;color:#e9e7d8}.rules p{font-size:13px;color:#c6d8e1}.rules b{color:#e3c578}.note{color:#afc9d5;border-color:#bca26166}.pattern{color:#d9e5e8}.pattern span{color:#bad1dc}.pattern input{accent-color:#dfbd70}
+footer{color:#a9c4cf}dialog{border:3px solid #17344b;background:linear-gradient(145deg,#456b80,#2c4c65);box-shadow:inset 0 3px 0 #b6d7e338,0 8px 0 #10283d,0 30px 70px #0007}dialog p{color:#d2e1e6}.win-icon{color:#f0ce7b;text-shadow:0 4px 0 #866438}
+@media(min-width:1100px){h1 br{display:none}}
+@media(max-width:760px){header{height:74px}.brand{font-size:25px}main{padding-top:26px;gap:24px}h1{font-size:33px}.intro p{font-size:14px}.game{padding:20px 12px 22px;border-radius:24px}.game-top{gap:8px}h2{font-size:21px}.stats{gap:4px}.stats>div{min-width:49px;padding:8px 5px}.stats strong{font-size:18px}.stats span{font-size:10px}.tag{font-size:11px}#board{gap:30px 13px;min-height:450px;padding:33px 1px 22px}.tube{width:58px;height:351px;padding:9px 3px;border-left-width:2px;border-right-width:2px}.ball{width:44px;height:44px}.ball span{width:27px;height:27px;font-size:22px}.tube:after{width:2px;left:2px}.actions{gap:7px}.actions button{padding:0 8px}.actions button span{font-size:12px}.actions .primary{font-size:12px}.difficulty{gap:8px}.difficulty button{padding:12px 6px;min-height:76px}.difficulty strong{font-size:12px}.difficulty small{font-size:10px}.mode-icon,.dots{display:none}aside{padding-top:0}.rules{margin-top:22px}.header-right{gap:8px}.saved{display:none}}
+@media(prefers-reduced-motion:reduce){.actions button:active:not(:disabled),.header-right button:active{transform:none}}
+
+/* Generated production art: the page remains functional if images fail, while
+   the authored sprites provide the expressive face and polished 3D finish. */
+body{background-image:linear-gradient(#d9f6fb42,#c8eef555),url('assets/toy-workshop-bg.png?v=20261102q');background-size:cover;background-position:center top;background-attachment:fixed}
+body:before{display:none}
+.ball{background-color:transparent;background-image:var(--sprite);background-size:100% 100%;background-position:center;background-repeat:no-repeat;border:0;box-shadow:none;overflow:visible}
+.ball:before{display:none}
+.ball span{position:absolute;right:-3px;bottom:-2px;width:22px;height:22px;font-size:16px;border:2px solid #fff7d7;background:linear-gradient(#fff8da,#e9d7a6);box-shadow:0 2px 0 #9b7139,0 3px 5px #27455766;color:#273245;z-index:2}
+.tube .ball:last-child{filter:drop-shadow(0 3px 2px #31546866)}
+.ball.drag-ghost{filter:drop-shadow(0 12px 8px #31546870);box-shadow:none}
+@media(max-width:760px){body{background-position:center top}.ball span{right:-2px;bottom:-1px;width:21px;height:21px;font-size:15px}}
+/* Daylight palette: a bright play surface with restrained highlights. */
+:root{--bg:#c5e5ef;--text:#24465f;--muted:#466b82;--accent:#af7525;color-scheme:light}
+body{color:var(--text);background:radial-gradient(ellipse at 15% 0,#f2f7e9a6,transparent 55%),linear-gradient(155deg,#ccebf1,#afd6e8)}
+body:before{opacity:.17;background-image:radial-gradient(#6797ac 1px,transparent 1px)}
+header{border-bottom-color:#4b84942b}.brand{color:#285575;text-shadow:0 2px 0 #f1faf0}.brand small,.saved{color:#476c82}
+.eyebrow{color:#79551e}.eyebrow span{background:#ae7e32}h1{color:#254d6c;text-shadow:0 3px 0 #eff8f0}.intro p{color:#476b80}
+.game{border-color:#6f9eb4;background:linear-gradient(145deg,#e2f1f2,#c4e1ec 65%,#b8d8e7);box-shadow:inset 0 3px 0 #f4fcf4b3,inset 0 -5px 0 #91b9cd88,0 7px 0 #6996af,0 18px 30px #527e9630}
+.game-top{border-bottom-color:#86b3c54d}.tag{color:#4a6d82}h2{color:#294f68;text-shadow:0 1px 0 #eff8ef}h2 small{color:#634c23;background:#e5d49e66;border-color:#ae904e40}
+.stats>div{background:#a9cddc66;border-color:#7ca4b957;box-shadow:inset 0 2px 3px #6e99ac22,0 1px 0 #f2faf27d}.stats strong{color:#2a526e;text-shadow:0 1px 0 #eaf4ed}.stats span{color:#466c83}
+#board{background:radial-gradient(ellipse at 50% 92%,#82b1c44d,transparent 65%)}
+.tube{border-color:#719eb4b3;background:linear-gradient(90deg,#f4ffff66,#effaff29 20%,#6792af0d 48%,#bddfe807 72%,#f2ffff5c 92%,#f5ffff75);box-shadow:inset 4px 0 5px #f4ffff66,inset -5px 0 7px #5a8ba23b,inset 0 -5px 6px #f2ffff70,5px 10px 12px #4f859438}
+.tube:before{border-color:#92b8c8;background:linear-gradient(#6e9bb4,#b8d7df);box-shadow:inset 0 3px 3px #466e894d,0 3px 0 #749db780,0 4px 3px #527f9240}
+.tube:after{background:linear-gradient(transparent,#f5fffec9 12%,#f1ffff61 72%,transparent)}
+.tube.selected{border-color:#a87828;box-shadow:inset 4px 0 5px #f4ffff66,inset -5px 0 7px #5a8ba23b,0 0 0 3px #dcac4840,5px 10px 12px #4f859438}.tube.selected:before{border-color:#b48a3e}
+.tube.complete{border-color:#4b9177}.tube.complete:before{border-color:#6fa88d}.tube.drop-valid{border-color:#287c5e;box-shadow:0 0 0 3px #438e6d40}.tube.drop-invalid{border-color:#b64d45;box-shadow:0 0 0 3px #bc65533d}
+.tube-wrap:before{background:radial-gradient(ellipse,#47758b66,transparent 70%)}
+.tube-label{color:#315e77;background:#a6cbdc85;border-color:#729caf40;box-shadow:inset 0 1px 2px #668fa229}.complete+.tube-label{color:#246a4e}
+#message{color:#345c75}.celebrating #message{color:#286947}.actions{border-top-color:#88afc457}
+.actions button,.header-right button{background:linear-gradient(#ecf5f2,#c6dfe8);color:#315b76;border-color:#729eb7;box-shadow:inset 0 2px 0 #ffffff80,0 4px 0 #7298b2,0 6px 9px #5d8da52b;text-shadow:0 1px 0 #f5faf0}
+.actions button:active:not(:disabled),.header-right button:active{box-shadow:inset 0 2px 0 #ffffff80,0 2px 0 #7298b2}
+.actions .primary,dialog .primary{background:linear-gradient(#f2d57c,#e0b650);border-color:#a47c35;color:#453619;box-shadow:inset 0 2px 0 #fff1b38c,0 4px 0 #a47c35,0 6px 9px #5d8da52b;text-shadow:0 1px 0 #ffe6a578}
+.aside-title{color:#335f78}.difficulty button{background:linear-gradient(130deg,#e1f0ed,#c2dee8);border-color:#79a3b9;box-shadow:inset 0 2px 0 #f5fff28c,0 4px 0 #79a1b8}.difficulty button.active{background:linear-gradient(130deg,#f2e8c4,#e8d99f);border-color:#b3924c;box-shadow:inset 0 2px 0 #fff8d38c,0 4px 0 #b3924c}.difficulty strong{color:#315772}.difficulty small{color:#46677b}.dots{color:#80632e}
+.rules{background:#dfefed80;border-color:#8bb3c35c}.rules h3{color:#355b71}.rules p{color:#43677c}.rules b{color:#806233}.note{color:#4a6d80;border-color:#b69a56}.pattern{color:#355b71}.pattern span{color:#4d7082}.pattern input{accent-color:#427e9e}footer{color:#4a7186}
+dialog{color:#294f68;background:linear-gradient(145deg,#e3f0ec,#c1dce7);border-color:#6f9eb4;box-shadow:inset 0 3px 0 #f5fff28c,0 8px 0 #6996af,0 30px 70px #25485759}dialog p{color:#42667b}dialog::backdrop{background:#294f6a70}.win-icon{color:#c59a38;text-shadow:0 3px 0 #a37a31}
+button:focus-visible,a:focus-visible,input:focus-visible{outline-color:#315f85}
+
+/* Final artwork layer. Keep this after the daylight theme so its raster art is
+   not cleared by later background shorthand declarations. */
+body{background-image:linear-gradient(#d9f6fb24,#c8eef535),url('assets/toy-workshop-bg.png?v=20261102q');background-color:#bfe7ef;background-size:cover;background-position:center top;background-repeat:no-repeat;background-attachment:fixed}
+.ball{border-radius:0;background-color:transparent;background-image:var(--sprite);background-size:contain;background-position:center;background-repeat:no-repeat;border:0;box-shadow:none;overflow:visible}
+
+/* Keep every difficulty on one continuous row. On narrow screens the board,
+   rather than the whole page, becomes the horizontal viewport. */
+#board{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;scroll-padding-inline:16px;overscroll-behavior-inline:contain;scrollbar-width:thin;scrollbar-color:#6ea5bb80 transparent}
+#board .tube-wrap{flex:0 0 auto;scroll-snap-align:center}
+#board .tube-wrap:first-child{margin-inline-start:auto}
+#board .tube-wrap:last-child{margin-inline-end:auto}
+#board::-webkit-scrollbar{height:7px}
+#board::-webkit-scrollbar-thumb{background:#6ea5bb80;border-radius:10px}
+#board::-webkit-scrollbar-track{background:transparent}
+@media(max-width:760px){#board{padding-inline:14px;scroll-padding-inline:14px}#board .tube-wrap:first-child{margin-inline-start:0}#board .tube-wrap:last-child{margin-inline-end:0}}
+
+/* Mobile play mode: show the entire puzzle at once. Tube width is derived from
+   the active count so six, seven, and eight tubes remain draggable in portrait. */
+@media(max-width:760px){
+  main{padding-inline:6px}
+  .game{padding-inline:6px}
+  #board{min-height:330px;padding-inline:2px;gap:4px;justify-content:center;overflow-x:hidden;scroll-snap-type:none}
+  #board .tube-wrap{min-width:0}
+  #board[data-count="6"] .tube-wrap{width:calc((100% - 20px)/6);max-width:58px}
+  #board[data-count="7"]{gap:3px}
+  #board[data-count="7"] .tube-wrap{width:calc((100% - 18px)/7);max-width:44px}
+  #board[data-count="8"]{gap:2px}
+  #board[data-count="8"] .tube-wrap{width:calc((100% - 14px)/8);max-width:44px}
+  #board[data-count="6"] .tube,#board[data-count="7"] .tube,#board[data-count="8"] .tube{width:100%;height:auto;padding:6px 1px;gap:1px;border-left-width:2px;border-right-width:2px;border-bottom-width:3px;border-radius:0 0 18px 18px}
+  #board[data-count="6"] .tube{aspect-ratio:1/6.53}
+  #board[data-count="7"] .tube,#board[data-count="8"] .tube{aspect-ratio:1/6.86}
+  #board[data-count="6"] .ball{width:calc(100% - 7px);height:auto;aspect-ratio:1}
+  #board[data-count="7"] .ball,#board[data-count="8"] .ball{width:calc(100% - 4px);height:auto;aspect-ratio:1}
+  #board[data-count="6"] .ball span,#board[data-count="7"] .ball span,#board[data-count="8"] .ball span{right:-1px;bottom:-1px;width:16px;height:16px;border-width:1px;font-size:11px;box-shadow:0 1px 0 #9b7139}
+  #board[data-count="6"] .tube:before,#board[data-count="7"] .tube:before,#board[data-count="8"] .tube:before{left:-3px;right:-3px;height:8px;border-width:2px}
+  #board[data-count="6"] .tube-label,#board[data-count="7"] .tube-label,#board[data-count="8"] .tube-label{min-width:24px;padding:3px 5px;font-size:10px}
+}
+
+/* Compact game chrome: the top bar now contains controls only. */
+header{height:68px}
+main{padding-top:22px}
+.brand{width:44px;height:44px}
+@media(max-width:760px){header{height:60px;padding-inline:12px}main{padding-top:12px}.brand{width:40px;height:40px}.brandmark{transform:scale(.86);transform-origin:center}}
+
+/* Compact HUD: symbols carry the category while accessible names remain on
+   the stat containers for screen readers. */
+.stats i{font-style:normal;font-size:13px;font-weight:900;color:#5b7d91;line-height:1}
+#message:empty{min-height:0;height:0;margin:0}
+aside{padding-top:0}
+@media(max-width:760px){.game-top{padding-bottom:12px}.stats>div{min-width:48px}.stats i{font-size:11px}.difficulty button{min-height:58px}.difficulty strong{font-size:13px}}
+
+/* Portrait artwork keeps the playable center quiet and places decoration at
+   the phone edges. Scroll attachment avoids mobile browser repaint jitter. */
+@media(max-width:760px){body{background-image:linear-gradient(#d9f6fb18,#c8eef524),url('assets/toy-workshop-mobile-bg.png?v=20261102q');background-size:cover;background-position:center top;background-repeat:no-repeat;background-attachment:scroll}}
+
+/* Let the portrait artwork become the playfield on phones. */
+@media(max-width:760px){.game{background:transparent;border:0;box-shadow:none}.game-top{border-bottom-color:#477f913d}#board{background:none}.actions{border-top-color:#477f913d}}
+
+/* Toy-plastic controls echo the generated workshop while remaining crisp,
+   scalable, and fully interactive at every phone density. */
+.actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;border-top:0;padding-top:16px}
+.actions button{--btn-top:#8fd4ef;--btn-bottom:#58a9cf;--btn-edge:#377b9e;--btn-depth:#286682;position:relative;isolation:isolate;overflow:hidden;width:100%;min-height:54px;margin:0!important;padding:0 10px;border:2px solid var(--btn-edge);border-radius:16px;background:linear-gradient(180deg,var(--btn-top),var(--btn-bottom));box-shadow:inset 0 3px 0 #ffffff73,inset 0 -2px 0 #244c6930,0 5px 0 var(--btn-depth),0 8px 12px #396b7f33;color:#24475d;font-size:20px;font-weight:900;white-space:nowrap;text-shadow:0 1px 0 #ffffff73;transition:transform .1s ease,box-shadow .1s ease,filter .15s ease}
+.actions button:before{content:'';position:absolute;z-index:-1;left:9%;right:9%;top:5px;height:35%;border-radius:999px;background:linear-gradient(#ffffff7d,#ffffff08);pointer-events:none}
+.actions button span{font-size:14px;font-weight:900;margin-left:4px}
+#hint{--btn-top:#ffe68a;--btn-bottom:#e9bc46;--btn-edge:#ad7b2d;--btn-depth:#8d632a;color:#58421f}
+#restart{--btn-top:#ffad92;--btn-bottom:#e87863;--btn-edge:#ad5349;--btn-depth:#8e443e;color:#63352f}
+#next{--btn-top:#9be1a8;--btn-bottom:#57b779;--btn-edge:#397e55;--btn-depth:#2d6948;color:#244e39}
+.actions button:hover:not(:disabled){filter:brightness(1.06) saturate(1.05)}
+.actions button:active:not(:disabled){transform:translateY(4px);box-shadow:inset 0 2px 0 #ffffff66,inset 0 -1px 0 #244c6926,0 1px 0 var(--btn-depth),0 3px 6px #396b7f2b}
+.actions button:disabled{opacity:.5;filter:grayscale(.25);box-shadow:inset 0 2px 0 #ffffff4d,0 3px 0 #64808c80;transform:none}
+.header-right button{border:2px solid #4c8fa8;background:linear-gradient(#edfafa,#a9d9e8);box-shadow:inset 0 2px 0 #ffffffb3,0 4px 0 #5f9db4,0 6px 9px #315e7133;color:#315c73;text-shadow:0 1px 0 #fff;border-radius:50%}
+#help{border-color:#b3883d;background:linear-gradient(#fff0a8,#eac65e);box-shadow:inset 0 2px 0 #fff8cf,0 4px 0 #a77c34,0 6px 9px #614d2733;color:#664b22}
+.header-right button:active{transform:translateY(3px);box-shadow:inset 0 2px 0 #ffffff80,0 1px 0 #5f8190}
+.difficulty button{border:2px solid #6e9fb1;background:linear-gradient(#eff9f5,#b7dfe7);box-shadow:inset 0 3px 0 #ffffffa3,0 4px 0 #6f9fb3,0 7px 10px #3d71852b;color:#315b71}
+.difficulty button.active{border-color:#b98c3c;background:linear-gradient(#fff0aa,#e9c35b);box-shadow:inset 0 3px 0 #fff9d1,0 4px 0 #a87c35,0 7px 10px #765d2d2b;color:#664b22}
+.difficulty button:active{transform:translateY(3px);box-shadow:inset 0 2px 0 #ffffff80,0 1px 0 #718a94}
+@media(max-width:760px){.actions{gap:6px;padding-top:12px}.actions button{min-height:50px;padding-inline:4px;border-radius:13px;font-size:15px}.actions button span{font-size:12px;margin-left:2px}.difficulty button{min-height:54px;border-radius:13px;padding:8px 4px}}

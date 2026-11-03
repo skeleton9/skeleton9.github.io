@@ -40,10 +40,22 @@
   icon: fa-compass
   group: Pages
 
+- title: 方块宠物屋
+  description: 按数字圈出矩形，为萌宠铺满温暖小家
+  url: /pages/games/pocket-paws/
+  icon: fa-paw
+  group: Games
+
 - title: "2048"
   description: 合并数字方块，挑战更高分数
   url: /pages/games/2048.html
   icon: fa-table-cells-large
+  group: Games
+
+- title: 彩球分类
+  description: 拖动顶部彩球，把同色彩球装满一管
+  url: /pages/games/ball-sort/
+  icon: fa-flask
   group: Games
 
 - title: 骰子大冒险
