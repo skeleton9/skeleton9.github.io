@@ -11,26 +11,26 @@ a.instjoy-home-link {
   height: 44px;
   box-sizing: border-box;
   padding: 0;
-  border: 1px solid #d8dee8;
+  border: 0;
   border-radius: 50%;
-  background: #fff;
+  background: transparent;
   color: #25334a;
-  box-shadow: 0 3px 12px #18253b26;
+  box-shadow: none;
   text-decoration: none;
   cursor: pointer;
 }
 a.instjoy-home-link:hover {
-  background: #edf2fa;
+  background: rgba(4, 211, 188, .12);
   color: #174ca0;
 }
 a.instjoy-home-link:focus-visible {
-  outline: 3px solid #2563eb;
+  outline: 3px solid #FB4A9B;
   outline-offset: 3px;
 }
 a.instjoy-home-link img {
   display: block;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   object-fit: contain;
 }
 @media print {

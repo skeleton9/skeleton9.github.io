@@ -1,0 +1,16 @@
+{
+  "name": "Instjoy · 片刻欢愉",
+  "short_name": "Instjoy",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#04D3BC",
+  "icons": [
+    {
+      "src": "/assets/brand/instjoy-turquoise-pink/icon-white.png?v=2",
+      "sizes": "1254x1254",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
