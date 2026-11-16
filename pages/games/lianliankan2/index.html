@@ -1,0 +1,824 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#eaf8f8" />
+    <meta name="description" content="白色、黑色、彩色三阶段合成的连连看小游戏" />
+    <link rel="icon" type="image/png" href="/assets/brand/instjoy-turquoise-pink/icon-transparent.png?v=2">
+    <link rel="apple-touch-icon" href="/assets/brand/instjoy-turquoise-pink/icon-white.png?v=2">
+    <title>三阶连连看</title>
+    <style>
+:root {
+  color-scheme: light;
+  --ink: #17243a;
+  --ink-soft: #52627a;
+  --ice: #eaf8f8;
+  --ice-deep: #cce7e8;
+  --cell: #bad4d7;
+  --purple: #9d18e6;
+  --purple-dark: #5b079d;
+  --yellow: #ffd84b;
+  --surface: #ffffff;
+  --black-piece: #131a25;
+  --line: #14c7bd;
+  --danger: #c53a4f;
+  --shadow: 0 18px 42px rgba(36, 70, 91, 0.18);
+  --radius-card: 32px;
+  --radius-cell: 14px;
+  --ease-pop: cubic-bezier(.2, .9, .25, 1.35);
+}
+
+* { box-sizing: border-box; }
+
+html { min-width: 320px; background: var(--ice); }
+
+body {
+  min-height: 100dvh;
+  margin: 0;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255, 255, 255, .96) 0 5%, transparent 27%),
+    radial-gradient(circle at 86% 80%, rgba(117, 215, 207, .28), transparent 32%),
+    var(--ice);
+  font-family: "Trebuchet MS", "Microsoft YaHei", sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button { font: inherit; touch-action: manipulation; }
+
+button:focus-visible {
+  outline: 4px solid var(--yellow);
+  outline-offset: 3px;
+}
+
+.game-shell {
+  width: min(100%, 560px);
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: max(18px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 auto 18px;
+  padding-inline: 6px;
+}
+
+.brand-kicker {
+  margin: 0 0 2px;
+  color: var(--purple-dark);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(18px, 4.8vw, 25px);
+  line-height: 1.2;
+  letter-spacing: -.02em;
+}
+
+.icon-button {
+  display: grid;
+  flex: 0 0 48px;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 2px solid rgba(23, 36, 58, .16);
+  border-radius: 50%;
+  color: var(--ink);
+  background: rgba(255, 255, 255, .72);
+  box-shadow: 0 5px 0 rgba(23, 36, 58, .12);
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+}
+
+.icon-button svg { width: 24px; fill: currentColor; }
+.icon-button:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(23, 36, 58, .12); }
+.icon-button.muted { opacity: .48; }
+
+.play-card {
+  position: relative;
+  padding: 42px 14px 18px;
+  border: 3px solid rgba(255, 255, 255, .92);
+  border-radius: var(--radius-card);
+  background: rgba(255, 255, 255, .72);
+  box-shadow: var(--shadow), inset 0 0 0 1px rgba(51, 106, 121, .12);
+  backdrop-filter: blur(8px);
+}
+
+.level-plaque {
+  position: absolute;
+  top: -23px;
+  left: 50%;
+  display: flex;
+  min-width: 180px;
+  height: 54px;
+  align-items: baseline;
+  justify-content: center;
+  gap: 9px;
+  transform: translateX(-50%);
+  border: 4px solid #394659;
+  border-radius: 22px;
+  color: white;
+  background: linear-gradient(#c22bff, var(--purple) 58%, #7407c0);
+  box-shadow: inset 0 0 0 3px rgba(255,255,255,.3), 0 5px 0 #97a9b0, 0 9px 18px rgba(91, 7, 157, .3);
+  text-shadow: 0 3px 0 rgba(0,0,0,.5);
+}
+
+.level-plaque span { font-size: 20px; font-weight: 950; letter-spacing: .04em; }
+.level-plaque strong { font-size: 28px; font-weight: 950; }
+
+.status-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 8px;
+  margin: 2px 4px 12px;
+}
+
+.stat { display: flex; flex-direction: column; line-height: 1.1; }
+.stat.align-right { align-items: flex-end; }
+.stat span { color: var(--ink-soft); font-size: 12px; font-weight: 700; }
+.stat strong { margin-top: 3px; font-size: 20px; font-variant-numeric: tabular-nums; }
+
+.chain-guide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #e5f3f3;
+}
+
+.chain-guide svg { width: 12px; stroke: #64758a; stroke-width: 2.5; fill: none; }
+.guide-piece { width: 18px; height: 18px; border: 2px solid var(--ink); border-radius: 50%; }
+.guide-piece.white { background: white; }
+.guide-piece.black { background: var(--black-piece); }
+.guide-piece.color { border-color: white; background: linear-gradient(135deg, #ff4568, #ffbd36 55%, #9d18e6); box-shadow: 0 0 0 2px #6e2e77; }
+.guide-burst { color: #dd7b00; font-size: 18px; font-weight: 900; }
+
+.board-wrap { position: relative; }
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  width: 100%;
+  padding: 6px;
+  border-radius: 20px;
+  background: #a7c6ca;
+  box-shadow: inset 0 3px 8px rgba(51, 86, 98, .22), 0 4px 0 #86abb0;
+}
+
+.cell {
+  display: grid;
+  aspect-ratio: 1;
+  min-width: 0;
+  place-items: center;
+  border-radius: var(--radius-cell);
+  background: var(--cell);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.5);
+}
+
+.piece {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 3px;
+  place-items: center;
+  border: 0;
+  border-radius: inherit;
+  color: var(--ink);
+  background: transparent;
+  cursor: pointer;
+  transition: transform 140ms var(--ease-pop), filter 140ms ease;
+}
+
+.piece svg {
+  width: 94%;
+  height: 94%;
+  overflow: visible;
+  fill: var(--piece-fill);
+  stroke: var(--piece-stroke);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 2px 0 rgba(23,36,58,.18));
+}
+
+.piece .cutout { fill: var(--piece-cutout); }
+.piece .detail { fill: none; stroke: var(--piece-detail); stroke-width: 2.2; }
+.piece .dots { stroke: none; }
+.piece.tier-0 { --piece-fill: #fff; --piece-stroke: #17243a; --piece-cutout: #bad4d7; --piece-detail: #17243a; }
+.piece.tier-1 { --piece-fill: #151b25; --piece-stroke: #fff; --piece-cutout: #bad4d7; --piece-detail: #fff; }
+.piece.tier-2 { --piece-fill: #ff6b63; --piece-stroke: #713555; --piece-cutout: #ffd24d; --piece-detail: #fff6dc; }
+.piece.tier-2 svg { filter: drop-shadow(0 2px 0 rgba(84,35,67,.25)) saturate(1.15); }
+.piece:hover { filter: brightness(1.06); }
+.piece:active { transform: scale(.92); }
+.piece.selected { transform: scale(1.08); filter: drop-shadow(0 0 8px var(--yellow)); }
+.piece.selected::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border: 3px solid var(--yellow);
+  border-radius: 12px;
+  box-shadow: 0 0 0 2px rgba(23,36,58,.4);
+}
+
+.piece.hint { animation: hint 750ms ease-in-out 2; }
+.piece.shake { animation: shake 260ms ease; }
+
+.path-layer {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.match-path {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 4px white);
+  stroke-dasharray: 14 8;
+  animation: dash 350ms linear infinite;
+}
+
+.path-1 { stroke: #8d58e7; }
+.path-2 { stroke: #ff7a3c; }
+
+.celebration { position: absolute; z-index: 4; inset: 0; pointer-events: none; overflow: hidden; border-radius: 20px; }
+.burst {
+  position: absolute;
+  color: var(--purple-dark);
+  font-size: 22px;
+  font-weight: 950;
+  transform: translate(-50%, -50%);
+  animation: burst 620ms var(--ease-pop) forwards;
+}
+.burst.tier-2 { color: #de5707; font-size: 42px; }
+
+.message {
+  min-height: 42px;
+  margin: 12px 4px 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  color: #31465e;
+  background: #e7f1f2;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+}
+.message[data-tone="warning"] { color: #8b2d20; background: #ffe5d5; }
+.message[data-tone="success"] { color: #17634b; background: #d8f5e8; }
+
+.actions { display: grid; grid-template-columns: 1fr 1fr 1.35fr; gap: 8px; }
+.action-button {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 2px solid rgba(23,36,58,.22);
+  border-radius: 15px;
+  font-size: 14px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
+}
+.action-button svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.action-button.secondary { color: var(--ink); background: #fff; box-shadow: 0 4px 0 #aebfc5; }
+.action-button.primary { color: #fff; background: linear-gradient(#a62bf1, #7512bb); box-shadow: 0 5px 0 #4d087b; text-shadow: 0 1px 1px rgba(0,0,0,.3); }
+.action-button:hover { filter: brightness(1.05); }
+.action-button:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(23,36,58,.35); }
+
+.rule-note { margin: 14px 16px 0; color: var(--ink-soft); font-size: 13px; font-weight: 700; text-align: center; }
+
+.dialog-backdrop {
+  position: fixed;
+  z-index: 20;
+  inset: 0;
+  display: grid;
+  padding: 24px;
+  place-items: center;
+  background: rgba(20, 31, 48, .64);
+  backdrop-filter: blur(7px);
+}
+.dialog-backdrop[hidden] { display: none; }
+.win-dialog {
+  width: min(100%, 360px);
+  padding: 28px;
+  border: 4px solid white;
+  border-radius: 28px;
+  background: var(--ice);
+  box-shadow: 0 25px 70px rgba(0,0,0,.35);
+  text-align: center;
+  animation: dialog-in 300ms var(--ease-pop);
+}
+.win-mark { color: var(--purple); font-size: 62px; line-height: 1; }
+.win-dialog h2 { margin: 6px 0; font-size: 30px; }
+.win-dialog p { margin: 0 0 20px; color: var(--ink-soft); line-height: 1.6; }
+.win-dialog .action-button { width: 100%; }
+
+@keyframes dash { to { stroke-dashoffset: -22; } }
+@keyframes hint { 50% { transform: scale(1.12); filter: drop-shadow(0 0 9px var(--yellow)); } }
+@keyframes shake { 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-3px); } }
+@keyframes burst { 0% { opacity: 0; transform: translate(-50%, -50%) scale(.4); } 35% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -110%) scale(1.45); } }
+@keyframes dialog-in { from { opacity: 0; transform: scale(.78); } }
+
+@media (max-width: 390px) {
+  .game-shell { padding-inline: 8px; }
+  .play-card { padding-inline: 8px; border-radius: 26px; }
+  .board { gap: 4px; padding: 4px; }
+  .cell { border-radius: 10px; }
+  .piece { min-width: 40px; min-height: 40px; padding: 2px; }
+  .action-button { gap: 4px; font-size: 13px; }
+  .action-button svg { width: 17px; }
+}
+
+@media (min-width: 760px) and (orientation: landscape) {
+  .game-shell { width: min(960px, 100%); }
+  .play-card { width: 520px; margin: 0 auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+</style>
+  </head>
+  <body>
+    <main class="game-shell" id="game">
+      <header class="topbar">
+        <div class="brand-block">
+          <p class="brand-kicker">三阶连连看</p>
+          <h1>合成到彩色，再一对消除</h1>
+        </div>
+        <button class="sound-button icon-button" id="soundButton" type="button" aria-label="关闭音效" aria-pressed="true">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4Zm12.5 3a4.5 4.5 0 0 0-2-3.74v7.48A4.5 4.5 0 0 0 16.5 12Zm-2-8v2.08a7 7 0 0 1 0 11.84V20a9 9 0 0 0 0-16Z"/></svg>
+        </button>
+      </header>
+
+      <section class="play-card" aria-label="游戏区域">
+        <div class="level-plaque" aria-label="当前关卡 1">
+          <span>LEVEL</span>
+          <strong id="levelValue">1</strong>
+        </div>
+
+        <div class="status-row">
+          <div class="stat"><span>得分</span><strong id="scoreValue">0</strong></div>
+          <div class="chain-guide" aria-label="合成规则">
+            <span class="guide-piece white" title="白色"></span>
+            <svg aria-hidden="true" viewBox="0 0 16 16"><path d="m5 3 5 5-5 5"/></svg>
+            <span class="guide-piece black" title="黑色"></span>
+            <svg aria-hidden="true" viewBox="0 0 16 16"><path d="m5 3 5 5-5 5"/></svg>
+            <span class="guide-piece color" title="彩色"></span>
+            <svg aria-hidden="true" viewBox="0 0 16 16"><path d="m5 3 5 5-5 5"/></svg>
+            <span class="guide-burst" aria-hidden="true">✦</span>
+          </div>
+          <div class="stat align-right"><span>剩余</span><strong id="remainingValue">40</strong></div>
+        </div>
+
+        <div class="board-wrap" id="boardWrap">
+          <div class="board" id="board" role="grid" aria-label="6列8行游戏棋盘"></div>
+          <svg class="path-layer" id="pathLayer" aria-hidden="true"></svg>
+          <div class="celebration" id="celebration" aria-hidden="true"></div>
+        </div>
+
+        <div class="message" id="message" role="status" aria-live="polite">选择两个相同的白色图案</div>
+
+        <div class="actions">
+          <button class="action-button secondary" id="hintButton" type="button">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M9 21h6m-7-4h8m2.5-7.5a6.5 6.5 0 1 0-11.74 3.85C7.5 14.5 8 15.2 8 17h8c0-1.8.5-2.5 1.24-3.65A6.45 6.45 0 0 0 18.5 9.5Z"/></svg>
+            提示
+          </button>
+          <button class="action-button secondary" id="shuffleButton" type="button">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M16 3h5v5M4 20l6.5-6.5M21 3l-7.5 7.5M16 16h5v5M4 4l17 17"/></svg>
+            洗牌
+          </button>
+          <button class="action-button primary" id="restartButton" type="button">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 4v6h6M5.5 15a8 8 0 1 0 .5-7.5L4 10"/></svg>
+            重新开始
+          </button>
+        </div>
+      </section>
+
+      <p class="rule-note">只能经过棋盘内的空格，连线最多转两次弯</p>
+    </main>
+
+    <div class="dialog-backdrop" id="winDialog" hidden>
+      <section class="win-dialog" role="dialog" aria-modal="true" aria-labelledby="winTitle">
+        <div class="win-mark" aria-hidden="true">✦</div>
+        <h2 id="winTitle">全部消除！</h2>
+        <p>你完成了三次合成链，最终得分 <strong id="finalScore">0</strong></p>
+        <button class="action-button primary" id="nextLevelButton" type="button">下一关</button>
+      </section>
+    </div>
+
+    <script>
+(() => {
+const ROWS = 8;
+const COLS = 6;
+const TYPES = ["donut", "flower", "cup", "cupcake", "cookie"];
+
+const DIRECTIONS = [
+  [-1, 0],
+  [0, 1],
+  [1, 0],
+  [0, -1],
+];
+
+function createBoard(random = Math.random) {
+  const pieces = TYPES.flatMap((type) =>
+    Array.from({ length: 8 }, (_, index) => ({ type, tier: 0, id: `${type}-${index}` })),
+  );
+  const cells = [...pieces, ...Array.from({ length: ROWS * COLS - pieces.length }, () => null)];
+  return shuffleArray(cells, random);
+}
+
+function shuffleArray(values, random = Math.random) {
+  const result = [...values];
+  for (let index = result.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(random() * (index + 1));
+    [result[index], result[swapIndex]] = [result[swapIndex], result[index]];
+  }
+  return result;
+}
+
+function indexToPoint(index) {
+  return { row: Math.floor(index / COLS), col: index % COLS };
+}
+
+function pointToIndex(row, col) {
+  return row * COLS + col;
+}
+
+function findPath(board, fromIndex, toIndex) {
+  if (fromIndex === toIndex || !board[fromIndex] || !board[toIndex]) return null;
+
+  const start = indexToPoint(fromIndex);
+  const target = indexToPoint(toIndex);
+  const queue = [{ ...start, direction: -1, turns: 0, path: [start] }];
+  const best = new Map();
+
+  while (queue.length) {
+    const current = queue.shift();
+    if (current.row === target.row && current.col === target.col) {
+      return compressPath(current.path);
+    }
+
+    for (let direction = 0; direction < DIRECTIONS.length; direction += 1) {
+      const [rowDelta, colDelta] = DIRECTIONS[direction];
+      const row = current.row + rowDelta;
+      const col = current.col + colDelta;
+      if (row < 0 || row >= ROWS || col < 0 || col >= COLS) continue;
+
+      const index = pointToIndex(row, col);
+      const isTarget = row === target.row && col === target.col;
+      if (board[index] && !isTarget) continue;
+
+      const turns = current.direction === -1 || current.direction === direction
+        ? current.turns
+        : current.turns + 1;
+      if (turns > 2) continue;
+
+      const key = `${row},${col},${direction}`;
+      if (best.has(key) && best.get(key) <= turns) continue;
+      best.set(key, turns);
+      queue.push({
+        row,
+        col,
+        direction,
+        turns,
+        path: [...current.path, { row, col }],
+      });
+    }
+  }
+
+  return null;
+}
+
+function compressPath(path) {
+  if (path.length <= 2) return path;
+  const result = [path[0]];
+  for (let index = 1; index < path.length - 1; index += 1) {
+    const previous = path[index - 1];
+    const current = path[index];
+    const next = path[index + 1];
+    const continuesStraight = previous.row === current.row && current.row === next.row
+      || previous.col === current.col && current.col === next.col;
+    if (!continuesStraight) result.push(current);
+  }
+  result.push(path[path.length - 1]);
+  return result;
+}
+
+function canMatch(first, second) {
+  return Boolean(first && second && first.type === second.type && first.tier === second.tier);
+}
+
+function findAvailableMove(board) {
+  for (let first = 0; first < board.length; first += 1) {
+    if (!board[first]) continue;
+    for (let second = first + 1; second < board.length; second += 1) {
+      if (!canMatch(board[first], board[second])) continue;
+      const path = findPath(board, first, second);
+      if (path) return { first, second, path };
+    }
+  }
+  return null;
+}
+
+function mergePair(board, firstIndex, secondIndex) {
+  if (!canMatch(board[firstIndex], board[secondIndex])) return board;
+  const next = [...board];
+  const piece = board[secondIndex];
+  next[firstIndex] = null;
+  next[secondIndex] = piece.tier === 2 ? null : { ...piece, tier: piece.tier + 1 };
+  return next;
+}
+
+const boardElement = document.querySelector("#board");
+const boardWrap = document.querySelector("#boardWrap");
+const pathLayer = document.querySelector("#pathLayer");
+const messageElement = document.querySelector("#message");
+const scoreElement = document.querySelector("#scoreValue");
+const remainingElement = document.querySelector("#remainingValue");
+const levelElement = document.querySelector("#levelValue");
+const celebration = document.querySelector("#celebration");
+const winDialog = document.querySelector("#winDialog");
+const finalScore = document.querySelector("#finalScore");
+
+let board = [];
+let selected = null;
+let score = 0;
+let level = 1;
+let busy = false;
+let soundOn = true;
+
+const TIER_NAMES = ["白色", "黑色", "彩色"];
+const TYPE_NAMES = {
+  donut: "甜甜圈",
+  flower: "小花",
+  cup: "杯子",
+  cupcake: "纸杯蛋糕",
+  cookie: "饼干",
+};
+
+const icons = {
+  donut: `<circle cx="32" cy="32" r="19"/><circle class="cutout" cx="32" cy="32" r="7"/><path class="detail" d="M18 25c4-7 7 2 11-4s8 4 17-1M18 38l5-2m15 8 5-3M33 17l2 4"/>`,
+  flower: `<path d="M32 28C21 10 10 21 20 32 8 39 19 53 31 40c9 15 25 4 15-8 13-10-1-23-13-9Z"/><circle class="cutout" cx="32" cy="32" r="7"/>`,
+  cup: `<path d="M17 22h29l-4 25H22Z"/><path class="detail" d="M18 27h27M24 34h16M24 17c0 3-3 3-3 6m12-6c0 3-3 3-3 6"/><path d="M45 27c9-1 9 12-2 12"/>`,
+  cupcake: `<path d="M18 32h28l-4 18H22Z"/><path d="M20 31c-5-8 4-14 10-10 2-9 15-7 14 2 9 2 8 10 2 10Z"/><path class="detail" d="m26 36 2 10m8-10-1 10"/>`,
+  cookie: `<circle cx="32" cy="32" r="20"/><g class="cutout dots"><circle cx="24" cy="23" r="3"/><circle cx="39" cy="25" r="3"/><circle cx="29" cy="38" r="3"/><circle cx="42" cy="40" r="3"/></g>`,
+};
+
+function pieceSvg(type) {
+  return `<svg viewBox="0 0 64 64" aria-hidden="true">${icons[type]}</svg>`;
+}
+
+function startGame({ nextLevel = false } = {}) {
+  if (nextLevel) level += 1;
+  score = 0;
+  selected = null;
+  busy = false;
+  board = makePlayable(createBoard());
+  winDialog.hidden = true;
+  levelElement.textContent = level;
+  setMessage("选择两个相同的白色图案");
+  render();
+}
+
+function makePlayable(candidate) {
+  let result = candidate;
+  for (let attempts = 0; attempts < 200 && !findAvailableMove(result); attempts += 1) {
+    result = shuffleOccupied(result);
+  }
+  return result;
+}
+
+function shuffleOccupied(currentBoard) {
+  const pieces = shuffleArray(currentBoard.filter(Boolean));
+  const positions = shuffleArray(Array.from({ length: currentBoard.length }, (_, index) => index));
+  const next = Array(currentBoard.length).fill(null);
+  pieces.forEach((piece, index) => {
+    next[positions[index]] = piece;
+  });
+  return next;
+}
+
+function render() {
+  boardElement.innerHTML = "";
+  board.forEach((piece, index) => {
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    cell.setAttribute("role", "gridcell");
+    if (piece) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `piece tier-${piece.tier}${selected === index ? " selected" : ""}`;
+      button.dataset.index = index;
+      button.setAttribute("aria-label", `${TIER_NAMES[piece.tier]}${TYPE_NAMES[piece.type]}，第 ${Math.floor(index / COLS) + 1} 行第 ${index % COLS + 1} 列`);
+      button.setAttribute("aria-pressed", selected === index ? "true" : "false");
+      button.innerHTML = pieceSvg(piece.type);
+      button.addEventListener("click", () => handlePieceClick(index));
+      cell.append(button);
+    }
+    boardElement.append(cell);
+  });
+  scoreElement.textContent = score.toLocaleString("zh-CN");
+  remainingElement.textContent = board.filter(Boolean).length;
+}
+
+function handlePieceClick(index) {
+  if (busy || !board[index]) return;
+  tone(340, 0.035);
+
+  if (selected === null) {
+    selected = index;
+    setMessage(`已选择${TIER_NAMES[board[index].tier]}${TYPE_NAMES[board[index].type]}`);
+    render();
+    return;
+  }
+
+  if (selected === index) {
+    selected = null;
+    setMessage("已取消选择");
+    render();
+    return;
+  }
+
+  if (!canMatch(board[selected], board[index])) {
+    selected = index;
+    setMessage("需要选择图案和颜色阶段都相同的一对", "warning");
+    render();
+    shakePiece(index);
+    return;
+  }
+
+  const firstIndex = selected;
+  const path = findPath(board, firstIndex, index);
+  if (!path) {
+    setMessage("棋盘内部没有两弯以内的通路", "warning");
+    shakePiece(index);
+    return;
+  }
+
+  const tier = board[index].tier;
+  selected = null;
+  busy = true;
+  drawPath(path, tier);
+  tone(tier === 2 ? 720 : 520 + tier * 80, 0.11);
+
+  window.setTimeout(() => {
+    board = mergePair(board, firstIndex, index);
+    score += [100, 240, 500][tier] * level;
+    pathLayer.innerHTML = "";
+    busy = false;
+    burstAt(index, tier);
+    setMessage(tier === 2 ? "彩色配对消除！" : `${TIER_NAMES[tier]}合成为${TIER_NAMES[tier + 1]}！`, "success");
+    render();
+    afterMove();
+  }, prefersReducedMotion() ? 80 : 320);
+}
+
+function afterMove() {
+  if (board.every((cell) => !cell)) {
+    window.setTimeout(showWin, 300);
+    return;
+  }
+  if (!findAvailableMove(board)) {
+    setMessage("当前没有可连接的一对，已自动洗牌", "warning");
+    window.setTimeout(() => {
+      board = makePlayable(shuffleOccupied(board));
+      render();
+    }, prefersReducedMotion() ? 100 : 600);
+  }
+}
+
+function drawPath(path, tier) {
+  const boardRect = boardElement.getBoundingClientRect();
+  const wrapRect = boardWrap.getBoundingClientRect();
+  const cellWidth = boardRect.width / COLS;
+  const cellHeight = boardRect.height / ROWS;
+  const offsetX = boardRect.left - wrapRect.left;
+  const offsetY = boardRect.top - wrapRect.top;
+  const points = path.map(({ row, col }) =>
+    `${offsetX + (col + 0.5) * cellWidth},${offsetY + (row + 0.5) * cellHeight}`,
+  ).join(" ");
+  pathLayer.setAttribute("viewBox", `0 0 ${wrapRect.width} ${wrapRect.height}`);
+  pathLayer.innerHTML = `<polyline class="match-path path-${tier}" points="${points}"/>`;
+}
+
+function burstAt(index, tier) {
+  const cell = boardElement.children[index];
+  if (!cell) return;
+  const cellRect = cell.getBoundingClientRect();
+  const wrapRect = boardWrap.getBoundingClientRect();
+  const burst = document.createElement("span");
+  burst.className = `burst tier-${tier}`;
+  burst.style.left = `${cellRect.left - wrapRect.left + cellRect.width / 2}px`;
+  burst.style.top = `${cellRect.top - wrapRect.top + cellRect.height / 2}px`;
+  burst.textContent = tier === 2 ? "✦" : "+1";
+  celebration.append(burst);
+  window.setTimeout(() => burst.remove(), 650);
+}
+
+function shakePiece(index) {
+  const piece = boardElement.children[index]?.querySelector(".piece");
+  if (!piece || prefersReducedMotion()) return;
+  piece.classList.remove("shake");
+  requestAnimationFrame(() => piece.classList.add("shake"));
+}
+
+function setMessage(text, toneName = "neutral") {
+  messageElement.textContent = text;
+  messageElement.dataset.tone = toneName;
+}
+
+function showHint() {
+  if (busy) return;
+  const move = findAvailableMove(board);
+  if (!move) {
+    setMessage("没有可用配对，试试洗牌", "warning");
+    return;
+  }
+  selected = move.first;
+  render();
+  boardElement.children[move.second]?.querySelector(".piece")?.classList.add("hint");
+  setMessage(`提示：寻找另一个${TIER_NAMES[board[move.first].tier]}${TYPE_NAMES[board[move.first].type]}`);
+}
+
+function shuffleBoard() {
+  if (busy) return;
+  selected = null;
+  board = makePlayable(shuffleOccupied(board));
+  setMessage("棋盘已重新排列");
+  render();
+  tone(420, 0.06);
+}
+
+function showWin() {
+  finalScore.textContent = score.toLocaleString("zh-CN");
+  winDialog.hidden = false;
+  document.querySelector("#nextLevelButton").focus();
+  tone(880, 0.18);
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function tone(frequency, duration) {
+  if (!soundOn) return;
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const context = new AudioContext();
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    oscillator.type = "sine";
+    oscillator.frequency.value = frequency;
+    gain.gain.setValueAtTime(0.035, context.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + duration);
+    oscillator.connect(gain).connect(context.destination);
+    oscillator.start();
+    oscillator.stop(context.currentTime + duration);
+    oscillator.addEventListener("ended", () => context.close());
+  } catch {
+    // Audio is an optional enhancement.
+  }
+}
+
+document.querySelector("#hintButton").addEventListener("click", showHint);
+document.querySelector("#shuffleButton").addEventListener("click", shuffleBoard);
+document.querySelector("#restartButton").addEventListener("click", () => startGame());
+document.querySelector("#nextLevelButton").addEventListener("click", () => startGame({ nextLevel: true }));
+document.querySelector("#soundButton").addEventListener("click", (event) => {
+  soundOn = !soundOn;
+  event.currentTarget.setAttribute("aria-pressed", soundOn ? "true" : "false");
+  event.currentTarget.setAttribute("aria-label", soundOn ? "关闭音效" : "开启音效");
+  event.currentTarget.classList.toggle("muted", !soundOn);
+  if (soundOn) tone(520, 0.05);
+});
+
+startGame();
+
+})();
+</script>
+  </body>
+</html>

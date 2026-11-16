@@ -40,6 +40,12 @@
   icon: fa-compass
   group: Pages
 
+- title: 三阶连连看
+  description: 连接相同图案，从白色、黑色一路合成到彩色
+  url: /pages/games/lianliankan2/
+  icon: fa-layer-group
+  group: Games
+
 - title: 方块宠物屋
   description: 按数字圈出矩形，为萌宠铺满温暖小家
   url: /pages/games/pocket-paws/
