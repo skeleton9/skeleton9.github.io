@@ -10,6 +10,12 @@
   icon: fa-pen-to-square
   group: Tools
 
+- title: 水印工坊
+  description: 本地图片水印工具，支持文字与 Logo 水印、裁剪和高清导出
+  url: /pages/watermark/
+  icon: fa-stamp
+  group: Tools
+
 - title: 成年人的自我进化
   description: 关于成长、行动与人生复利的单页视觉思考框架
   url: /pages/m/adult-evolution.html
