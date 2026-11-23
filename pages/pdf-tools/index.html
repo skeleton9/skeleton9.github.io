@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PDF 工具 · Instjoy</title>
+<link rel="icon" href="/assets/brand/instjoy-turquoise-pink/icon-transparent.png?v=2">
+<link rel="stylesheet" href="style.css">
+<script defer src="vendor/pdf-lib.min.js"></script><script defer src="vendor/jszip.min.js"></script>
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<header><a href="https://dev.instjoy.com/" aria-label="返回首页"><img src="/assets/brand/instjoy-turquoise-pink/logo-horizontal.png" alt="Instjoy"></a><span>文件在你的浏览器本地处理</span></header>
+<main><h1>PDF 与图片，自由转换。</h1><p class="intro">整理照片、导出文档，或把整份 PDF 变成一张长图。</p>
+<section><h2>图片 / PDF 混合合成</h2><p>支持 JPG、PNG、WebP 和 PDF 混合添加。按列表顺序合并，每张图片生成一页，PDF 按原页序加入并保留页面尺寸。加密 PDF 请先解密。</p>
+<fieldset id="imageControls"><label class="upload">添加图片或 PDF<input id="images" type="file" accept="image/jpeg,image/png,image/webp,application/pdf,.pdf" multiple></label>
+<ol id="imageList"></ol><div class="actions"><label>图片页面尺寸 <select id="paper"><option value="original">适应图片比例</option><option value="a4">A4 纵向 · 保留白边</option></select></label><button id="merge" disabled>合成并下载 PDF</button><button id="clear" class="secondary">清空文件</button></div></fieldset></section>
+<section><h2>PDF 导出图片</h2><p>按页导出 PNG / JPG，或将全部页面纵向拼成一张长图。</p>
+<fieldset id="pdfControls"><label class="upload">选择 PDF 文件<input id="pdf" type="file" accept="application/pdf,.pdf"></label><p id="pdfName">尚未选择文件</p>
+<div class="actions"><label>文件密码（如有） <input id="password" type="password" autocomplete="off"></label><label>清晰度 <select id="scale"><option value="1">标准 · 72 DPI</option><option value="2" selected>高清 · 144 DPI</option><option value="3">超清 · 216 DPI</option></select></label><label>图片格式 <select id="format"><option value="png">PNG</option><option value="jpeg">JPG</option></select></label></div>
+<div class="actions"><button id="exportPages" disabled>按页导出 ZIP</button><button id="exportLong" disabled>导出拼接长图</button></div></fieldset></section>
+<p id="status" role="status" aria-live="polite">准备就绪</p><div id="result"></div>
+</main></body></html>

@@ -1,3 +1,9 @@
+- title: PDF 工具
+  description: 图片与 PDF 混合合成、PDF 导出图片与拼接长图
+  url: /pages/pdf-tools/
+  icon: fa-file-pdf
+  group: Tools
+
 - title: 快排版
   description: 小红书风格文本卡片生成器
   url: /pages/kuaipaiban/

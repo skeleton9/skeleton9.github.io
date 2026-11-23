@@ -1,6 +1,8 @@
 # Bundler cache
 .bundle
 vendor
+!pages/pdf-tools/vendor/
+!pages/pdf-tools/vendor/**
 Gemfile.lock
 
 # Jekyll cache
