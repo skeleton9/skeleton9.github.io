@@ -52,6 +52,12 @@
   icon: fa-compass
   group: Pages
 
+- title: 答案之书
+  description: 默想一个问题，翻开星光中的书页，遇见一句新的启发
+  url: /pages/games/book-of-answers/
+  icon: fa-book-open
+  group: Games
+
 - title: 三阶连连看
   description: 连接相同图案，从白色、黑色一路合成到彩色
   url: /pages/games/lianliankan2/
